@@ -2,14 +2,16 @@ const Discord = require("discord.js");
 const auth = require('../auth.json');
 const cmd = require('./commands.js');
 const util = require('./utils.js');
-const dbData = require("better-sqlite3")("./db/userdata.db");
 const coolDownSet = new Set();
 const client = new Discord.Client();
-
 client.login(auth.token);
 
 client.on("ready", () => {
     console.log(`Logged ! ${client.user.tag}`);
+    util.sql.connect(function(err) {
+        if (err) throw err;
+        console.log("Connected!");
+    });
 });
 
 client.on("guildCreate", guild => {
@@ -28,17 +30,17 @@ client.on("guildCreate", guild => {
 });
 
 client.on("guildDelete", guild => {
-    if (util.getPrefixServer(guild.id)[1]) {
-        dbData.prepare("DELETE FROM prefix WHERE id = ?").run(guild.id);
-    }
+    util.getPrefixServer(guild.id).then(r => {
+        if (r[1]) {
+            util.sql.query("DELETE FROM prefixserver WHERE id = ?", [guild.id], function(err, result) {if (err) throw err})
+        }
+    })
     console.log(`LEFT ${guild.id} - ${guild.name}`);
 });
 
 client.on("message", msg => {
     let sMsg = msg.content.split(' ');
     msg.content = msg.content.toLowerCase();
-
-    const prefix = (msg.guild !== null) ? util.getPrefixServer(msg.guild.id)[0] : "sm!";
     const commandsList = {
         // Basics
         "init": {func: cmd.initializeUser},
@@ -56,27 +58,34 @@ client.on("message", msg => {
         //Player info
         "balance": {func: cmd.showBalance},
         "list": {func: cmd.showList},
-        "daily": {func: cmd.getDaily}
+        "daily": {func: cmd.getDaily},
+
+        //Admin commands
+        //"money_edit": {func: cmd.moneyEdit}
+        //"trade_edit": {func: cmd.tradeEdit}
     };
 
-    if (msg.content.startsWith(prefix)) {
-        try {
-            console.log(`${msg.author.id} - ${msg.content}`);
+    util.getPrefixServer(msg.guild.id).then(r => {
+        r = (msg.guild !== null) ? r[0] : "sm!";
+        if (msg.content.startsWith(r)) {
+            try {
+                console.log(`${msg.author.id} - ${msg.content}`);
 
-            if (!commandsList[sMsg[0].split(prefix)[1]]) {
-                return
+                if (!commandsList[sMsg[0].split(r)[1]]) {
+                    return
+                }
+                const {func, args} = commandsList[sMsg[0].split(r)[1]];
+                const coolDownDelay = 0.1;
+                util.sendMsg(msg, coolDownDelay, func, coolDownSet, args);
+            } catch (e) {
+                msg.channel.send("Something went terribly wrong! Please send the following text to Cryx#6546\n" +
+                    "```\n" + e + "\n```");
+                console.log(e);
             }
-            const {func, args} = commandsList[sMsg[0].split(prefix)[1]];
-            const coolDownDelay = 2;
-            util.sendMsg(msg, coolDownDelay, func, coolDownSet, args);
-        } catch (e) {
-            msg.channel.send("Something went terribly wrong! Please send the following text to Cryx#6546\n" +
-                "```\n" + e + "\n```");
-            console.log(e);
         }
-    }
 
-    if (msg.content === `<@!${client.user.id}> prefix`) {
-        msg.channel.send(`My prefix is **${prefix}**`)
-    }
+        if (msg.content.split(" ")[0] === `<@!${client.user.id}>`) {
+            msg.channel.send(`My prefix is **${r}**`)
+        }
+    });
 });

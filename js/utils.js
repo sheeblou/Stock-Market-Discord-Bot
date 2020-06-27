@@ -1,4 +1,3 @@
-const dbData = require("better-sqlite3")("./db/userdata.db");
 const discord = require('discord.js');
 const axios = require("axios");
 const auth = require('../auth.json');
@@ -7,11 +6,27 @@ const fs = require('fs');
 const tdvApi = require("tradingview-scraper");
 const tv = new tdvApi.TradingViewAPI()
 
+const sql = require('mysql').createConnection({
+    host: auth.db_host,
+    database: auth.db_name,
+    user: auth.db_user,
+    password: auth.db_pass
+});
+
 
 function getUserData(userId, value = ["*"]) {
-    return dbData.prepare(`SELECT ${value} FROM data WHERE id = ?`).get(userId);
+    return new Promise((resolve, reject) => {
+        sql.query(`SELECT ${value} FROM userdata WHERE id = ?`, [userId],
+            function (err, result) {
+                if (err){
+                    reject(err);
+                    throw err;
+                }
+                resolve(result);
+            }
+        );
+    })
 }
-
 
 function getStockData(tagArray = []) {
     let data = [];
@@ -51,44 +66,62 @@ function getStockData(tagArray = []) {
 
 
 function getPrefixServer(serverId) {
-    let query = dbData.prepare('SELECT prefix FROM prefix WHERE id = ?').get(serverId);
-    if (query !== undefined) {
-        return [query.prefix, true];
-    }
-    return ["sm!", false];
+    return new Promise((resolve, reject) => {
+        sql.query("SELECT prefix FROM prefixserver WHERE id = ?", [serverId],
+            function (err, result) {
+                if (err) {
+                    reject(err)
+                    throw err
+                }
+                if (result[0] !== undefined) {
+                    resolve([result[0]["prefix"], true]);
+                }
+                resolve(["sm!", false]);
+            }
+        );
+    });
 }
 
 
-function setPrefixServer(serverId, prefix) {
-    if (!getPrefixServer(serverId)[1]) {
-        dbData.prepare("INSERT INTO prefix VALUES(?,?)").run(serverId, prefix);
+async function setPrefixServer(serverId, prefix) {
+    let r = await getPrefixServer(serverId)
+    if (!r[1]) {
+        sql.query("INSERT INTO prefixserver VALUES(?,?)", [serverId, prefix], function(err, result){if (err) throw err});
     } else {
-        dbData.prepare("UPDATE prefix SET prefix = ? WHERE id = ?").run(prefix, serverId);
+        sql.query("UPDATE prefixserver SET prefix = ? WHERE id = ?", [prefix, serverId], function(err, result){if (err) throw err});
     }
 }
 
 
-function isAccountCreated(userId, autoMessage = false, msg) {
-    let row = dbData.prepare("SELECT id FROM data WHERE id = ?").get(userId);
-    let isCreated = (row !== undefined);
+async function isAccountCreated(userId, autoMessage = false, msg) {
+    let prefix = await getPrefixServer(msg.guild.id);
+    return new Promise(((resolve, reject) => {
+        sql.query("SELECT id FROM userdata WHERE id = ?", [userId],
+            function(err, result){
+                if (err) reject(err);
 
-    if (!isCreated && autoMessage) {
-        msg.channel.send((userId === msg.author.id) ? "You don't have any account! Please create one by typing `sm!init`" : "This member doesn't have any account!");
-    }
-    return isCreated;
+                let isCreated = (result[0] !== undefined);
+                if (!isCreated && autoMessage) {
+                    msg.channel.send((userId === msg.author.id) ? `You don't have any account! Please create one by typing **${prefix[0]}init**` : "This member doesn't have any account!");
+                }
+                return resolve(isCreated);
+            }
+        );
+    }))
 }
 
 
-function getTradeList(msg, userId = msg.author.id, value = null) {
-    let list = getUserData(userId, "trades").trades;
+async function getTradeList(msg, userId = msg.author.id, value = null) {
+    let list = await getUserData(userId, "trades");
+    list = list[0]["trades"];
 
     list = JSON.parse(list).trades;
     return (Number.isInteger(value)) ? list.find(elem => elem.id === value) : list;
 }
 
 
-function updateList(msg, status, edit = []) {
-    let list = getTradeList(msg);
+async function updateList(msg, status, edit = []) {
+    let list = await getTradeList(msg);
 
     if (status === "del") {
         list = list.filter(elem => !edit.includes(elem.id));
@@ -108,7 +141,7 @@ function updateList(msg, status, edit = []) {
     }
 
     list = {trades: list};
-    dbData.prepare("UPDATE data SET trades = ? WHERE id = ?").run(JSON.stringify(list), msg.author.id);
+    sql.query("UPDATE userdata SET trades = ? WHERE id = ?", [JSON.stringify(list), msg.author.id], function(err, result){if (err) throw err});
 }
 
 
@@ -233,10 +266,10 @@ async function getTradeInfo(list, msg) {
 // }
 
 
-function updateMoney(msg, userID, num) {
-    let money = getUserData(userID, "money").money;
-    money = Math.max(0, money + num);
-    dbData.prepare("UPDATE data SET money = ? WHERE id = ?").run(money, userID);
+async function updateMoney(msg, userID, num, isAdding = true) {
+    let money = await getUserData(userID, "money");
+    money = Math.max(0, isAdding == true ? money[0]["money"] + num : num);
+    sql.query("UPDATE userdata SET money = ? WHERE id = ?", [money, userID], function(err, result){if (err) throw err});
 }
 
 
@@ -339,4 +372,5 @@ module.exports = {
     setPrefixServer: setPrefixServer,
     autoDelete: autoDelete,
     getStockData: getStockData,
+    sql : sql,
 };

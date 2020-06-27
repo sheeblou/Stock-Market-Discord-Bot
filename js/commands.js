@@ -1,15 +1,19 @@
-const dbData = require("better-sqlite3")("./db/userdata.db");
 const util = require("./utils.js");
-const fs = require("fs");
+const ownerID = "165127283470893056";
+
 
 //init
 function initializeUser(msg) {
     if (util.isAccountCreated(msg.author.id)) {
         msg.channel.send("You have already initialized your account!");
     } else {
-        dbData.prepare("INSERT INTO data VALUES(?,?,?,?)").run(msg.author.id, 100000, '{"trades" : []}', 0);
-        msg.channel.send("Your account has been created!");
-        showHelp(msg);
+        util.sql.query("INSERT INTO userdata VALUES(?,?,?,?)", [msg.author.id, 100000, '{"trades" : []}', 0],
+        function(err, result) {
+                if (err) throw err;
+                msg.channel.send("Your account has been created!");
+                showHelp(msg);
+            }
+        );
     }
 }
 
@@ -17,14 +21,14 @@ function initializeUser(msg) {
 async function showBalance(msg) {
     let displayName = msg.guild !== null ? (await msg.guild.members.fetch(util.getUserId(msg, msg.content))).displayName : msg.author.username;
     let userid = displayName === msg.author.username ? msg.author.id : util.getUserId(msg, msg.content);
-
-    if (util.isAccountCreated(userid, true, msg)) {
-        let userMoney = util.getUserData(userid, "money").money
+    if (await util.isAccountCreated(userid, true, msg)) {
+        let userMoney = await util.getUserData(userid, "money");
+        userMoney = userMoney[0]["money"];
         let arr = [{
             name: `Balance of ${displayName}:`,
             value: `**$${util.setRightNumFormat(userMoney)}**`
         }];
-        let list = util.getTradeList(msg);
+        let list = await util.getTradeList(msg);
         if (list.length > 0) {
             let sumProfit = await util.getTradeInfo(list, msg);
             let symb = sumProfit[2] > 0 ? "+" : "";
@@ -74,7 +78,7 @@ function setPrefix(msg, arg) {
 
     let permsAuthor = msg.channel.permissionsFor(msg.author.id);
     if (permsAuthor.has("ADMINISTRATOR") || permsAuthor.has("MANAGE_GUILD")) {
-        (arg !== "sm!") ? util.setPrefixServer(msg.guild.id, arg) : dbData.prepare("DELETE FROM prefix WHERE id = ?").run(msg.guild.id);
+        (arg !== "sm!") ? util.setPrefixServer(msg.guild.id, arg) : util.sql.query("DELETE FROM prefixserver WHERE id = ?", [msg.guild.id], function(err, result){if (err) throw err});
         msg.channel.send(`My prefix is now **${arg}**`);
     } else {
         msg.channel.send("You don't have enough permission! (You need to have `ADMINISTRATOR` or `MANAGE_GUILD` permission on the server)");
@@ -147,17 +151,20 @@ async function showMarket(msg) {
 
 
 //daily
-function getDaily(msg) {
-    if (util.isAccountCreated(msg.author.id, true, msg)) {
-        let data = util.getUserData(msg.author.id, ["dailytime", "money"])
+async function getDaily(msg) {
+    if (await util.isAccountCreated(msg.author.id, true, msg)) {
+        let data = await util.getUserData(msg.author.id, ["dailytime", "money"]);
+        let dailyTime = data[0]["dailytime"];
+        let money = data[0]["money"];
+
         let dateNow = Math.round(Date.now() / 1000);
-        let delay = parseInt(data.dailytime) - dateNow;
+        let delay = parseInt(dailyTime) - dateNow;
 
         if (delay < 0) {
-            let newBalance = data.money + 2500;
+            let newBalance = money + 2500;
             let newDailyTime = dateNow + 86400;
 
-            dbData.prepare("UPDATE data SET money = ?, dailytime = ? WHERE id = ?").run(newBalance, newDailyTime, msg.author.id,);
+            util.sql.query("UPDATE userdata SET money = ?, dailytime = ? WHERE id = ?", [newBalance, newDailyTime, msg.author.id], function(err, result){if (err) throw err});
             msg.channel.send(util.createEmbedMessage(msg, "56C114", "Your daily reward!", [{
                 name: `You have received your daily reward!`,
                 value: `Thank you for your fidelity, you have received $2,500!`
@@ -182,8 +189,8 @@ async function showList(msg) {
     let displayName = (msg.guild !== null) ? (await msg.guild.members.fetch(util.getUserId(msg, msg.content))).displayName : msg.author.username;
     let userid = (displayName === msg.author.username) ? msg.author.id : util.getUserId(msg, msg.content);
 
-    if (util.isAccountCreated(userid, true, msg)) {
-        let list = util.getTradeList(msg, userid);
+    if (await util.isAccountCreated(userid, true, msg)) {
+        let list = await util.getTradeList(msg, userid);
         let embedList = [];
 
         if (list.length <= 0) {
@@ -207,13 +214,13 @@ async function showList(msg) {
 
 //closetrade
 async function closeTrade(msg) {
-    if (util.isAccountCreated(msg.author.id, true, msg)) {
+    if (await util.isAccountCreated(msg.author.id, true, msg)) {
         let id = parseInt(msg.content.split(" ")[1]);
 
         if (util.getTradeList(msg, msg.author.id, id) === undefined || isNaN(id)) {
             msg.channel.send(`You don't have any trade with ID: **${id}** \nType sm!list to see your trades and IDs`);
         } else {
-            let trade = await util.getTradeInfo([util.getTradeList(msg, msg.author.id, id)], msg, msg.author.id);
+            let trade = await util.getTradeInfo([await util.getTradeList(msg, msg.author.id, id)], msg, msg.author.id);
             trade = trade[0];
 
             let arrMsg, titleMsg;
@@ -223,8 +230,8 @@ async function closeTrade(msg) {
                     name: `Trade n°**${id}** closed.`,
                     value: `You have earned **$${util.setRightNumFormat(trade[0].worthTrade)}**`
                 }
-                util.updateMoney(msg, msg.author.id, trade[0].worthTrade);
-                util.updateList(msg, "del", [id]);
+                await util.updateMoney(msg, msg.author.id, trade[0].worthTrade);
+                await util.updateList(msg, "del", [id]);
                 showBalance(msg);
 
             }
@@ -245,7 +252,7 @@ async function closeTrade(msg) {
 
 //newtrade
 async function newTrade(msg) {
-    if (util.isAccountCreated(msg.author.id, true, msg)) {
+    if (await util.isAccountCreated(msg.author.id, true, msg)) {
         let status = msg.content.split(" ")[1];
         let symb = msg.content.split(" ")[2];
         let amount = msg.content.split(" ")[3];
@@ -257,7 +264,8 @@ async function newTrade(msg) {
         } else if ((status !== "buy" && status !== "sell") || isNaN(amount) || amount === "" || amount < 0) {
             msg.channel.send("Syntax error! Please try again. `sm!newtrade <buy/sell> <symbol> <amount>`");
         } else {
-            let money = util.getUserData(msg.author.id, "money").money;
+            let money = await util.getUserData(msg.author.id, "money");
+            money = money[0]["money"];
             if (money - amount >= 0) {
                 if (list.length >= 15) {
                     msg.channel.send(util.createEmbedMessage(msg, "FF0000", "Payement refused!",
@@ -267,8 +275,9 @@ async function newTrade(msg) {
                         }]));
                 } else {
                     let vol = amount / resp[0].price;
-                    util.updateList(msg, "add", [symb, status, vol, amount]);
-                    dbData.prepare("UPDATE data SET money = ? WHERE id = ?").run(money - amount, msg.author.id);
+                    await util.updateList(msg, "add", [symb, status, vol, amount]);
+
+                    util.sql.query("UPDATE userdata SET money = ? WHERE id = ?", [money - amount, msg.author.id], function(err, result){if (err) throw err});
 
                     msg.channel.send(util.createEmbedMessage(msg, "56C114", "Payement accepted!",
                         [{
@@ -307,25 +316,48 @@ async function showPing(msg) {
 }
 
 //about
-function showAbout(msg, num) {
-    let dbStats = dbData.prepare("SELECT SUM(money), COUNT(*) FROM data").get();
-    let totalMoney = util.setRightNumFormat(dbStats["SUM(money)"], false);
-    let totalMembers = util.setRightNumFormat(dbStats["COUNT(*)"], false);
-    let arr = [
-        {
-            name: `Stats:`,
-            value: `- Working with **${totalMembers}** traders, owning **$${totalMoney}** in their balance!\n- Doing my business on **${util.setRightNumFormat(num, false)}** servers!`
-        },
-        {
-            name: `Need support?`,
-            value: `https://discord.gg/K3tUKAV`
-        },
-        {
-            name: `Source code:`,
-            value: `https://github.com/cryx3001/Stock-Market-Discord-Bot`
+async function showAbout(msg, num) {
+    util.sql.query("SELECT SUM(money), COUNT(*) FROM userdata",
+        function(err, result){
+            if (err) throw err
+            let totalMoney = util.setRightNumFormat(result[0]['SUM(money)'], false);
+            let totalMembers = util.setRightNumFormat(result[0]['COUNT(*)'], false);
+            let arr = [
+                {
+                    name: `Stats:`,
+                    value: `- Working with **${totalMembers}** traders, owning **$${totalMoney}** in their balance!\n- Doing my business on **${util.setRightNumFormat(num, false)}** servers!`
+                },
+                {
+                    name: `Need support?`,
+                    value: `https://discord.gg/K3tUKAV`
+                },
+                {
+                    name: `Source code:`,
+                    value: `https://github.com/cryx3001/Stock-Market-Discord-Bot`
+                },
+                {
+                    name: `Donate!`,
+                    value: "**BTC :** `3CsrqouBbDToyoZH4XCq3yjs5DoCPMG3Ba`\n**ETH :** `0x8ACba400cACFb79977c607aAEFDf71De35405076`"
+                }
+            ];
+            msg.channel.send(util.createEmbedMessage(msg, "008CFF", "About the bot", arr));
         }
-    ];
-    msg.channel.send(util.createEmbedMessage(msg, "008CFF", "About the bot", arr));
+    );
+}
+
+//money_edit
+async function moneyEdit(msg){
+    msg.content = msg.content.split(" ");
+    if(msg.author.id === ownerID && await util.isAccountCreated(msg.content[1], true, msg)){
+        await util.updateMoney(msg, msg.content[1], parseFloat(msg.content[2]) || 0, msg.content[3] || 1);
+    }
+}
+
+//trade_edit
+async function tradeEdit(msg){
+    if(msg.author.id === ownerID && await util.isAccountCreated(msg.content[1], true, msg)){
+
+    }
 }
 
 
@@ -342,4 +374,6 @@ module.exports = {
     showPing: showPing,
     showAbout: showAbout,
     setPrefix: setPrefix,
+    tradeEdit: tradeEdit,
+    moneyEdit: moneyEdit,
 };
