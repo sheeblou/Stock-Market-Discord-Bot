@@ -34,13 +34,6 @@ Then type `sm!show <symbol>` if you want more details about it.
 Now it's time to trade! Follow the instructions above for `newtrade` and `closetrade`!
 Happy trading!
 
-## Getting started
-### Test it!
-You can invite the bot on your Discord server [here](https://discordapp.com/oauth2/authorize?client_id=700690470891814912&permissions=3072&scope=bot). Type `sm!help` to get started!
 
-### Clone it!
-If you want to try the bot on your own side, you have to:
-- Rename the `db (empty)` folder to `db`.
-- Install the latest version of `node.js`
-- Install the depedencies
-- Replace the token to log-in
+## Test it!
+You can invite the bot on your Discord server [here](https://discordapp.com/oauth2/authorize?client_id=700690470891814912&permissions=3072&scope=bot). Type `sm!help` to get started!
