@@ -3,8 +3,9 @@ const ownerID = "165127283470893056";
 
 
 //init
-function initializeUser(msg) {
-    if (util.isAccountCreated(msg.author.id)) {
+async function initializeUser(msg) {
+    let accCreated = await util.isAccountCreated(msg.author.id, false, msg);
+    if (accCreated) {
         msg.channel.send("You have already initialized your account!");
     } else {
         util.sql.query("INSERT INTO userdata VALUES(?,?,?,?)", [msg.author.id, 100000, '{"trades" : []}', 0],
@@ -216,15 +217,19 @@ async function showList(msg) {
 async function closeTrade(msg) {
     if (await util.isAccountCreated(msg.author.id, true, msg)) {
         let id = parseInt(msg.content.split(" ")[1]);
+        let titleMsg = "Error!"
+        let arrMsg = {
+            name: `Failed to close the trade n°**${id}**!`,
+            value: `You asked for a trade which doesn't exist! Please try again. (Command **list** to see IDs)`
+        }
 
         if (util.getTradeList(msg, msg.author.id, id) === undefined || isNaN(id)) {
-            msg.channel.send(`You don't have any trade with ID: **${id}** \nType sm!list to see your trades and IDs`);
+            msg.channel.send(util.createEmbedMessage(msg, "FF0000", titleMsg, [arrMsg]));
         } else {
             let trade = await util.getTradeInfo([await util.getTradeList(msg, msg.author.id, id)], msg, msg.author.id);
             trade = trade[0];
 
-            let arrMsg, titleMsg;
-            if(trade[0].worthTrade !== undefined && !isNaN(trade[0].worthTrade)){
+            if(trade[0].worthTrade !== undefined && !isNaN(trade[0].worthTrade && trade !== "-1")){
                 titleMsg = "Trade closed";
                 arrMsg = {
                     name: `Trade n°**${id}** closed.`,
@@ -235,8 +240,7 @@ async function closeTrade(msg) {
                 showBalance(msg);
 
             }
-            else {
-                titleMsg = "Error!";
+            else if (trade !== "-1") {
                 arrMsg = {
                     name: `Failed to close the trade n°**${id}**!`,
                     value: `The value retrieved by the service is invalid, please try later. If this error persist, please contact the support.`

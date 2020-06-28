@@ -65,7 +65,8 @@ client.on("message", msg => {
         //"trade_edit": {func: cmd.tradeEdit}
     };
 
-    util.getPrefixServer(msg.guild.id).then(r => {
+    let idServer = (msg.guild !== null) ? msg.guild.id : "-1";
+    util.getPrefixServer(idServer).then(r => {
         r = (msg.guild !== null) ? r[0] : "sm!";
         if (msg.content.startsWith(r)) {
             try {

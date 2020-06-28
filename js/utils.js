@@ -67,6 +67,8 @@ function getStockData(tagArray = []) {
 
 function getPrefixServer(serverId) {
     return new Promise((resolve, reject) => {
+        if(serverId === "-1") resolve(["sm!", false]);
+
         sql.query("SELECT prefix FROM prefixserver WHERE id = ?", [serverId],
             function (err, result) {
                 if (err) {
@@ -94,7 +96,6 @@ async function setPrefixServer(serverId, prefix) {
 
 
 async function isAccountCreated(userId, autoMessage = false, msg) {
-    let prefix = await getPrefixServer(msg.guild.id);
     return new Promise(((resolve, reject) => {
         sql.query("SELECT id FROM userdata WHERE id = ?", [userId],
             function(err, result){
@@ -102,7 +103,7 @@ async function isAccountCreated(userId, autoMessage = false, msg) {
 
                 let isCreated = (result[0] !== undefined);
                 if (!isCreated && autoMessage) {
-                    msg.channel.send((userId === msg.author.id) ? `You don't have any account! Please create one by typing **${prefix[0]}init**` : "This member doesn't have any account!");
+                    msg.channel.send((userId === msg.author.id) ? `You don't have any account! Please create one with the command **init**` : "This member doesn't have any account!");
                 }
                 return resolve(isCreated);
             }
@@ -114,7 +115,6 @@ async function isAccountCreated(userId, autoMessage = false, msg) {
 async function getTradeList(msg, userId = msg.author.id, value = null) {
     let list = await getUserData(userId, "trades");
     list = list[0]["trades"];
-
     list = JSON.parse(list).trades;
     return (Number.isInteger(value)) ? list.find(elem => elem.id === value) : list;
 }
@@ -168,6 +168,10 @@ function createEmbedMessage(msg, color, title, content = [], desc = null, img = 
 async function getTradeInfo(list, msg) {
     let arrSymb = [];
     let arrTrade = [];
+
+    if(list[0] == undefined){
+        return["-1"]
+    }
 
     for (const elem of list) {
         arrSymb.push(elem.symbol)
