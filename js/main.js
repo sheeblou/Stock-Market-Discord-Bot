@@ -51,7 +51,9 @@ client.on("message", msg => {
 
         // Trades manipulation
         "newtrade": {func: cmd.newTrade},
+        "nt": {func: cmd.newTrade},
         "closetrade": {func: cmd.closeTrade},
+        "ct": {func: cmd.closeTrade},
         "search": {func: cmd.searchMarket},
         "show": {func: cmd.showMarket},
 
@@ -63,7 +65,12 @@ client.on("message", msg => {
         //Admin commands
         //"money_edit": {func: cmd.moneyEdit}
         //"trade_edit": {func: cmd.tradeEdit}
+        "send_mp": {func:cmd.sendMp, args: client}
     };
+
+    if(msg.guild === null && msg.author.id !== client.user.id && !msg.content.startsWith("sm!")){
+        console.log(`DM: ${msg.author.id} - ${msg.content}`);
+    }
 
     let idServer = (msg.guild !== null) ? msg.guild.id : "-1";
     util.getPrefixServer(idServer).then(r => {

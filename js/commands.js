@@ -61,7 +61,11 @@ function showHelp(msg) {
             },
             {
                 name: "*Okay, how do I play?* ",
-                value: "First, you are going to look for a market. Type `sm!search <name/symbol>`.\nThen type `sm!show <symbol>` if you want more details about it.\nNow it's time to trade! Follow the instructions above for `newtrade` and `closetrade`!\n***The symbol is not the name, it is the word between ( ) next to the name when you type sm!search (Ex: TSLA, AAPL, MSFT...) ***\nHappy trading!",
+                value: "First, you are going to look for a market. Type `sm!search`, it will redirect you to a website.\nThen type `sm!show <symbol>` if you want more details about it.\nNow it's time to trade! Follow the instructions above for `newtrade` and `closetrade`!\n***The symbol is not the name, but may look like this: TSLA, AAPL, MSFT... ***\nHappy trading!"
+            },
+            {
+                name: "*Available aliases*",
+                value: "`buy` = `b`\n`sell` = `s`\n`newtrade` = `nt`\n`closetrade` = `ct`\n"
             }
         ]
     ));
@@ -261,7 +265,16 @@ async function newTrade(msg) {
         let symb = msg.content.split(" ")[2];
         let amount = msg.content.split(" ")[3];
         let resp = await util.getStockData([symb])
-        let list = util.getTradeList(msg, msg.author.id);
+        let list = await util.getTradeList(msg, msg.author.id);
+
+        switch(status){
+            case "s":
+                status = "sell";
+                break;
+            case "b":
+                status = "buy";
+                break;
+        }
 
         if (resp[0].status === 0 || resp[0] === undefined || resp[0].price === undefined) {
             msg.channel.send("Unknown market! Please search one with `sm!search <name/symbol>` (ex: *sm!search Apple* or *sm!search AAPL*)");
@@ -364,6 +377,14 @@ async function tradeEdit(msg){
     }
 }
 
+//send_mp
+function sendMp(msg, client){
+    let splited = msg.content.split(" ");
+    if(msg.author.id === ownerID){
+        let user = client.users.cache.get(splited[1]);
+        user.send(msg.content.substr((splited[0] + splited[1]).length + 1));
+    }
+}
 
 module.exports = {
     searchMarket: searchMarket,
@@ -380,4 +401,5 @@ module.exports = {
     setPrefix: setPrefix,
     tradeEdit: tradeEdit,
     moneyEdit: moneyEdit,
+    sendMp: sendMp
 };
