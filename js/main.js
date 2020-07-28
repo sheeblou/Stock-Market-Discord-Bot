@@ -8,6 +8,7 @@ client.login(auth.token);
 
 client.on("ready", () => {
     console.log(`Logged ! ${client.user.tag}`);
+    client.user.setPresence({activity: {name: `${client.guilds.cache.size} servers!`, type: "WATCHING", url: "https://www.twitch.tv/monstercat"}});
     util.sql.connect(function(err) {
         if (err) throw err;
         console.log("Connected!");
@@ -21,9 +22,10 @@ client.on("guildCreate", guild => {
             if (channel.type === "text" && defChannel === "" && channel.permissionsFor(guild.me).has("SEND_MESSAGES") && channel.permissionsFor(guild.me).has("VIEW_CHANNEL")) {
                 defChannel = channel;
                 defChannel.send("Hey! To get started type `sm!help` !");
-                console.log(`JOINED ${guild.id} - ${guild.name}`)
             }
         });
+        client.user.setPresence({activity: {name: `${client.guilds.cache.size} servers!`, type: "WATCHING", url: "https://www.twitch.tv/monstercat"}});
+        console.log(`JOINED ${guild.id} - ${guild.name} - ${guild.memberCount} - (${client.users.cache.size})`)
     } catch (e) {
         console.log(e);
     }
@@ -35,7 +37,8 @@ client.on("guildDelete", guild => {
             util.sql.query("DELETE FROM prefixserver WHERE id = ?", [guild.id], function(err, result) {if (err) throw err})
         }
     })
-    console.log(`LEFT ${guild.id} - ${guild.name}`);
+    client.user.setPresence({activity: {name: `${client.guilds.cache.size} servers!`, type: "WATCHING", url: "https://www.twitch.tv/monstercat"}});
+    console.log(`LEFT ${guild.id} - ${guild.name} - ${guild.memberCount} - (${client.users.cache.size})`);
 });
 
 client.on("message", msg => {
@@ -44,6 +47,7 @@ client.on("message", msg => {
     const commandsList = {
         // Basics
         "init": {func: cmd.initializeUser},
+        "del": {func: cmd.deleteUser},
         "help": {func: cmd.showHelp},
         "prefix": {func: cmd.setPrefix, args: sMsg[1]},
         "ping": {func: cmd.showPing},
@@ -70,6 +74,7 @@ client.on("message", msg => {
 
     if(msg.guild === null && msg.author.id !== client.user.id && !msg.content.startsWith("sm!")){
         console.log(`DM: ${msg.author.id} - ${msg.content}`);
+        client.users.cache.get("165127283470893056").send(`${msg.author.id} (${msg.author.username}#${msg.author.discriminator}) - ${msg.content}`);
     }
 
     let idServer = (msg.guild !== null) ? msg.guild.id : "-1";
