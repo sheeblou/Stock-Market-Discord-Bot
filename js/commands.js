@@ -18,6 +18,22 @@ async function initializeUser(msg) {
     }
 }
 
+//del
+async function deleteUser(msg){
+    let accCreated = await util.isAccountCreated(msg.author.id, false, msg);
+    if (accCreated) {
+        util.sql.query("DELETE FROM userdata WHERE id = ?", [msg.author.id],
+            function(err) {
+                if (err) throw err;
+                msg.channel.send("Your account has been deleted! You can recreate one with **init**");
+            }
+        );
+    }
+    else{
+        msg.channel.send("Huh, I didn't find your account.");
+    }
+}
+
 //balance
 async function showBalance(msg) {
     let displayName = msg.guild !== null ? (await msg.guild.members.fetch(util.getUserId(msg, msg.content))).displayName : msg.author.username;
@@ -49,7 +65,7 @@ function showHelp(msg) {
         [
             {
                 name: "*Basics*",
-                value: "`help` You're here \n`init` The command to get started \n`prefix <prefix>` Change my prefix to the choosen one! \n*Note: Mention me with `prefix` to know my prefix! (@Stock Market prefix)*\n`ping` To see the latency between you, the bot and the API\n`about` About the bot\n"
+                value: "`help` You're here \n`init` The command to get started \n`del` Delete your account from the database (__Warning: Your account will be instantly wiped out from the database without any confirmation!__)\n`prefix <prefix>` Change my prefix to the choosen one! \n*Note: Mention me with `prefix` to know my prefix! (@Stock Market prefix)*\n`ping` To see the latency between you, the bot and the API\n`about` About the bot\n"
             },
             {
                 name: "*Player account*",
@@ -57,7 +73,7 @@ function showHelp(msg) {
             },
             {
                 name: "*Stock Market* ",
-                value: "`search <name/symbol>` To search stock markets (ex: *sm!search Apple or sm!search AAPL*)\n`show <symbol>` To get details about a particular market (ex: *sm!show AAPL*)\n`newtrade <buy/sell> <symbol> <price>` To trade stocks on the market(ex: *sm!newtrade buy AAPL 5000*)\n==>`buy` if you think the stock will go up, \n==>`sell` if you think the stock will go down.\n`closetrade <ID>` (ex: *sm!closetrade 0*) Close a trade (the ID can be found with the `list` command). Give to you the final value of your trade."
+                value: "`search` To search for stock markets\n`show <symbol>` To get details about a particular market (ex: *sm!show AAPL*)\n`newtrade <buy/sell> <symbol> <price>` To trade stocks on the market(ex: *sm!newtrade buy AAPL 5000*)\n==>`buy` if you think the stock will go up, \n==>`sell` if you think the stock will go down.\n`closetrade <ID>` (ex: *sm!closetrade 0*) Close a trade (the ID can be found with the `list` command). Give to you the final value of your trade."
             },
             {
                 name: "*Okay, how do I play?* ",
@@ -116,7 +132,7 @@ async function searchMarket(msg) {
     //     }
     //     msg.channel.send(util.createEmbedMessage(msg, "008CFF", "Results", arrText));
     // }
-    msg.channel.send("Sorry! The service providing data has changed, please search your market here: https://www.tradingview.com/screener/ ")
+    msg.channel.send("Regular markets: https://www.tradingview.com/screener/ \nCryptocurrencies: https://www.tradingview.com/crypto-screener/ \nFOREX: https://www.tradingview.com/forex-screener/")
 }
 
 //show
@@ -371,11 +387,11 @@ async function moneyEdit(msg){
 }
 
 //trade_edit
-async function tradeEdit(msg){
-    if(msg.author.id === ownerID && await util.isAccountCreated(msg.content[1], true, msg)){
-
-    }
-}
+// async function tradeEdit(msg){
+//     if(msg.author.id === ownerID && await util.isAccountCreated(msg.content[1], true, msg)){
+//
+//     }
+// }
 
 //send_mp
 function sendMp(msg, client){
@@ -389,6 +405,7 @@ function sendMp(msg, client){
 module.exports = {
     searchMarket: searchMarket,
     initializeUser: initializeUser,
+    deleteUser : deleteUser,
     showBalance: showBalance,
     getDaily: getDaily,
     showMarket: showMarket,
@@ -399,7 +416,7 @@ module.exports = {
     showPing: showPing,
     showAbout: showAbout,
     setPrefix: setPrefix,
-    tradeEdit: tradeEdit,
+    // tradeEdit: tradeEdit,
     moneyEdit: moneyEdit,
     sendMp: sendMp
 };

@@ -1,8 +1,8 @@
+// const axios = require("axios");
+// const plotly = require('plotly')(auth.usernameplot, auth.tokenplot);
+// const fs = require('fs');
 const discord = require('discord.js');
-const axios = require("axios");
 const auth = require('../auth.json');
-const plotly = require('plotly')(auth.usernameplot, auth.tokenplot);
-const fs = require('fs');
 const tdvApi = require("tradingview-scraper");
 const tv = new tdvApi.TradingViewAPI()
 
@@ -293,60 +293,60 @@ async function sendMsg(msg, sec, func, set, args = undefined) {
 }
 
 // Not used
-function getChart(tag, limit, msg) {
-    return new Promise((resolve, reject) => {
-        axios.get(`https://financialmodelingprep.com/api/v3/historical-chart/15min/${tag}`).then((arr) => {
-            let date = [];
-            let close = [];
-            let i = 0;
-            try {
-                for (const elem of arr.data) {
-                    if (i >= limit) {
-                        break;
-                    }
-                    date.push(elem.date);
-                    close.push(elem.close);
-                    i++;
-                }
-            } catch (TypeError) {
-                console.log(`IMAGE NOT FOUND FOR ${tag} WITH ID ${msg.id}`)
-            }
+// function getChart(tag, limit, msg) {
+//     return new Promise((resolve, reject) => {
+//         axios.get(`https://financialmodelingprep.com/api/v3/historical-chart/15min/${tag}`).then((arr) => {
+//             let date = [];
+//             let close = [];
+//             let i = 0;
+//             try {
+//                 for (const elem of arr.data) {
+//                     if (i >= limit) {
+//                         break;
+//                     }
+//                     date.push(elem.date);
+//                     close.push(elem.close);
+//                     i++;
+//                 }
+//             } catch (TypeError) {
+//                 console.log(`IMAGE NOT FOUND FOR ${tag} WITH ID ${msg.id}`)
+//             }
+//
+//             let data = {
+//                 "data": [{
+//                     x: date,
+//                     y: close,
+//                     type: "scatter",
+//                     mode: "lines+markers"
+//                 }]
+//             };
+//
+//
+//             let opt = {
+//                 format: 'png',
+//                 width: '1000',
+//                 height: '500'
+//             }
+//
+//             plotly.getImage(data, opt, function (err, imageStream) {
+//                 if (err) return console.log(err);
+//                 let filestream = fs.createWriteStream(`img/${msg.id}.png`);
+//                 imageStream.pipe(filestream);
+//                 filestream.on('error', resolve); //Even if the promise failed, we want Promise.Race (in commands.js) to be resolved as fast as possible
+//                 filestream.on('finish', resolve);
+//             })
+//         })
+//     });
+// }
 
-            let data = {
-                "data": [{
-                    x: date,
-                    y: close,
-                    type: "scatter",
-                    mode: "lines+markers"
-                }]
-            };
 
-
-            let opt = {
-                format: 'png',
-                width: '1000',
-                height: '500'
-            }
-
-            plotly.getImage(data, opt, function (err, imageStream) {
-                if (err) return console.log(err);
-                let filestream = fs.createWriteStream(`img/${msg.id}.png`);
-                imageStream.pipe(filestream);
-                filestream.on('error', resolve); //Even if the promise failed, we want Promise.Race (in commands.js) to be resolved as fast as possible
-                filestream.on('finish', resolve);
-            })
-        })
-    });
-}
-
-
-function autoDelete(msg, path, check) {
-    if (check) {
-        fs.unlink(path, function (err) {
-            if (err) throw err;
-        })
-    }
-}
+// function autoDelete(msg, path, check) {
+//     if (check) {
+//         fs.unlink(path, function (err) {
+//             if (err) throw err;
+//         })
+//     }
+// }
 
 
 function getUserId(msg, txt) {
@@ -370,11 +370,11 @@ module.exports = {
     setRightNumFormat: setRightNumFormat,
     updateMoney: updateMoney,
     sendMsg: sendMsg,
-    getChart: getChart,
+    // getChart: getChart,
     getUserId: getUserId,
     getPrefixServer: getPrefixServer,
     setPrefixServer: setPrefixServer,
-    autoDelete: autoDelete,
+    // autoDelete: autoDelete,
     getStockData: getStockData,
     sql : sql,
 };
