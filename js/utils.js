@@ -39,6 +39,8 @@ function getStockData(tagArray = []) {
                 .then((resp) => {
                     data.push({
                         status: 1,
+                        session: resp.current_session,
+                        update: resp.update_mode,
                         price: resp.lp || resp.bid,
                         symbol: resp.short_name.toUpperCase(),
                         name: resp.description,
@@ -190,6 +192,8 @@ async function getTradeInfo(list, msg) {
                     status: elem.status,
                     haspaid: parseFloat(elem.haspaid),
                     price: market.price,
+                    session: market.session,
+                    update: market.update
                 }
             )
         });
@@ -226,7 +230,9 @@ async function getTradeInfo(list, msg) {
                 worthTrade: worthTrade,
                 profit: profit,
                 profitPercentage: percentage,
-                shownWorthTrade: shownWorthTrade
+                shownWorthTrade: shownWorthTrade,
+                session: m.session,
+                update: m.update
             }
         )
     }
