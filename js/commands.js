@@ -114,7 +114,7 @@ function setPrefix(msg, arg) {
         }
         msg.channel.send(`My prefix is now **${arg}**`);
     } else {
-        msg.channel.send("You don't have enough permission! (You need to have `ADMINISTRATOR` or `MANAGE_GUILD` permission on the server)");
+        msg.channel.send("You don't have enough permissions! (You need to have `ADMINISTRATOR` or `MANAGE_GUILD` permission on the server)");
     }
 }
 
@@ -162,7 +162,7 @@ async function showMarket(msg) {
         let status = (resp.session === "market") ? "open" : "closed";
         let update = "Unknown";
         if(resp.update === "streaming") {
-            update = "Instant";
+            update = "Instantaneous";
         }
         else if(resp.update.startsWith("delayed_streaming")){
             update = `Delayed by ${parseInt(resp.update.split("delayed_streaming_")[1]) / 60} minutes`
@@ -379,7 +379,7 @@ async function showAbout(msg, num) {
                 },
                 {
                     name: `Need support?`,
-                    value: `https://discord.gg/K3tUKAV`
+                    value: `https://discord.gg/K3tUKAV or send a pm to the bot!`
                 },
                 {
                     name: `Source code:`,

@@ -95,7 +95,7 @@ client.on("message", msg => {
             }
         }
 
-        if (msg.content.split(" ")[0] === `<@!${client.user.id}>`) {
+        if (msg.content.startsWith(`<@!${client.user.id}>`) || msg.content.startsWith(`<@${client.user.id}>`)) {
             msg.channel.send(`My prefix is **${r}**`)
         }
     });
