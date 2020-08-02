@@ -43,7 +43,6 @@ client.on("guildDelete", guild => {
 
 client.on("message", msg => {
     let sMsg = msg.content.split(' ');
-    msg.content = msg.content.toLowerCase();
     const commandsList = {
         // Basics
         "init": {func: cmd.initializeUser},
@@ -83,11 +82,10 @@ client.on("message", msg => {
         if (msg.content.startsWith(r)) {
             try {
                 console.log(`${msg.author.id} - ${msg.content}`);
-
-                if (!commandsList[sMsg[0].split(r)[1]]) {
+                if (!commandsList[sMsg[0].split(r)[1].toLowerCase()]) {
                     return
                 }
-                const {func, args} = commandsList[sMsg[0].split(r)[1]];
+                const {func, args} = commandsList[sMsg[0].split(r)[1].toLowerCase()];
                 const coolDownDelay = 0.1;
                 util.sendMsg(msg, coolDownDelay, func, coolDownSet, args);
             } catch (e) {

@@ -99,7 +99,19 @@ function setPrefix(msg, arg) {
 
     let permsAuthor = msg.channel.permissionsFor(msg.author.id);
     if (permsAuthor.has("ADMINISTRATOR") || permsAuthor.has("MANAGE_GUILD")) {
-        (arg !== "sm!") ? util.setPrefixServer(msg.guild.id, arg) : util.sql.query("DELETE FROM prefixserver WHERE id = ?", [msg.guild.id], function(err, result){if (err) throw err});
+        if(arg !== "sm!"){
+            try{
+                //Escape is deprecated, I beg you, don't use it
+                util.setPrefixServer(msg.guild.id, decodeURIComponent(escape(arg)));
+            }
+            catch (e) {
+                msg.channel.send("The prefix asked is not in the right format! (Please use the latin alphabet)");
+                return;
+            }
+        }
+        else{
+            util.sql.query("DELETE FROM prefixserver WHERE id = ?", [msg.guild.id], function(err){if (err) throw err})
+        }
         msg.channel.send(`My prefix is now **${arg}**`);
     } else {
         msg.channel.send("You don't have enough permission! (You need to have `ADMINISTRATOR` or `MANAGE_GUILD` permission on the server)");
@@ -147,13 +159,19 @@ async function showMarket(msg) {
     // Promise.race([timer, util.getChart(tag.toUpperCase(), 192, msg)]).then(() =>{
     try {
         resp = resp[0];
-        let symbolUrl = resp.symbol.startsWith("^") ? resp.symbol.substring(1, resp.symbol.length) : resp.symbol;
-
+        let status = (resp.session === "market") ? "open" : "closed";
+        let update = "Unknown";
+        if(resp.update === "streaming") {
+            update = "Instant";
+        }
+        else if(resp.update.startsWith("delayed_streaming")){
+            update = `Delayed by ${parseInt(resp.update.split("delayed_streaming_")[1]) / 60} minutes`
+        }
         let field = {
             name: `Informations for ${resp.name} (${resp.symbol}): `,
-            value: `Price: **$${resp.price}** (Change: **${resp.changesPercentage}%** => **$${resp.change}**) \n \nSome prices may be different due to sources or delays.\n**If prices do not fluctuate, markets are likely closed.**`
+            value: `__Price__: **$${util.setRightNumFormat(resp.price)}** (Change: **${resp.changesPercentage}%** => **$${util.setRightNumFormat(resp.change)}**)\n__Status__: Currently ${status}\n__Update__: ${update}`
         }
-        let defaultDescription = `Chart available [here](https://tradingview.com/chart/?symbol=${symbolUrl}).`
+        let defaultDescription = `Chart available [here](https://tradingview.com/chart/?symbol=${resp.symbol}).`
 
         msg.channel.send(util.createEmbedMessage(msg, "008CFF", "Details", [field], description = defaultDescription))
         //
@@ -223,12 +241,11 @@ async function showList(msg) {
             for (const elem of tradeInfo[0]) {
                 let arr = {
                     name: `${elem.status.toUpperCase()} - ${elem.name} - ${elem.symbol.toUpperCase()} (ID: ${elem.id})`,
-                    value: `Change: **${util.setRightNumFormat(elem.profitPercentage)}%**\n__By share__: Paid: **$${util.setRightNumFormat(elem.haspaid / elem.volume)}**, Now: **$${util.setRightNumFormat(elem.shownWorthTrade / elem.volume)}** (Profit: **$${(util.setRightNumFormat((elem.profit / elem.volume)))}**)\n__Your trade__: Paid: **$${util.setRightNumFormat(elem.haspaid)}**, Now: **$${util.setRightNumFormat(elem.shownWorthTrade)}** (Profit: **$${util.setRightNumFormat(elem.profit)}**)\n`
+                    value: `__Status__: ${(elem.session === "market") ? "**Market open**" : "**Market closed**"}\n__Change__: **${util.setRightNumFormat(elem.profitPercentage)}%**\n__By share__: Paid: **$${util.setRightNumFormat(elem.haspaid / elem.volume)}**, Now: **$${util.setRightNumFormat(elem.shownWorthTrade / elem.volume)}** (Profit: **$${(util.setRightNumFormat((elem.profit / elem.volume)))}**)\n__Your trade__: Paid: **$${util.setRightNumFormat(elem.haspaid)}**, Now: **$${util.setRightNumFormat(elem.shownWorthTrade)}** (Profit: **$${util.setRightNumFormat(elem.profit)}**)\n`
                 };
                 embedList.push(arr);
             }
             msg.channel.send(util.createEmbedMessage(msg, "008CFF", `Trades of ${displayName}`, embedList, `__Total profit:__ **$${util.setRightNumFormat(sumProfit)}**`));
-            //msg.channel.send("If some values are invalid, please go to the support server with a screenshot `https://discord.gg/K3tUKAV`")
         }
     }
 }
