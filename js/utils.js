@@ -182,20 +182,25 @@ async function getTradeInfo(list, msg) {
     try {
         list.forEach(elem => {
             let market = resp.find(e => elem.symbol.toUpperCase() === e.symbol || elem.symbol.toUpperCase().split(":")[1] === e.symbol)
-            let isValid = market.price !== undefined && !isNaN(market.price);
-            arrTrade.push(
-                {
-                    id: elem.id,
-                    name: isValid ?  market.name : "REQUEST FAILED, RETRY LATER",
-                    symbol: isValid ?  elem.symbol : "API ERROR",
-                    volume: elem.volume,
-                    status: elem.status,
-                    haspaid: parseFloat(elem.haspaid),
-                    price: market.price,
-                    session: market.session,
-                    update: market.update
-                }
-            )
+            if(!market){
+                msg.channel.send(`Something went terribly wrong while fetching the data of **${elem.symbol}** (ID: **${elem.id}**)! Please try again or contact the support`)
+            }
+            else{
+                let isValid = market.price !== undefined && !isNaN(market.price);
+                arrTrade.push(
+                    {
+                        id: elem.id,
+                        name: isValid ?  market.name : "REQUEST FAILED, RETRY LATER",
+                        symbol: isValid ?  elem.symbol : "API ERROR",
+                        volume: elem.volume,
+                        status: elem.status,
+                        haspaid: parseFloat(elem.haspaid),
+                        price: market.price,
+                        session: market.session,
+                        update: market.update
+                    }
+                )
+            }
         });
     } catch (e) {
         msg.channel.send("Something went terribly wrong! Please try later.\n```\n" + e + "\n```");

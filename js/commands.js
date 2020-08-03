@@ -266,6 +266,9 @@ async function closeTrade(msg) {
             let trade = await util.getTradeInfo([await util.getTradeList(msg, msg.author.id, id)], msg, msg.author.id);
             trade = trade[0];
 
+            if(!trade[0]){
+                return;
+            }
             if(trade[0].worthTrade !== undefined && !isNaN(trade[0].worthTrade && trade !== "-1")){
                 titleMsg = "Trade closed";
                 arrMsg = {
@@ -325,7 +328,7 @@ async function newTrade(msg) {
                         }]));
                 } else {
                     let vol = amount / resp[0].price;
-                    await util.updateList(msg, "add", [symb, status, vol, amount]);
+                    await util.updateList(msg, "add", [resp[0].symbol, status, vol, amount]);
 
                     util.sql.query("UPDATE userdata SET money = ? WHERE id = ?", [money - amount, msg.author.id], function(err, result){if (err) throw err});
 
