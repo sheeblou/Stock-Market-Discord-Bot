@@ -1,8 +1,7 @@
-db
 package-lock.json
-auth.json
+confDev.js
+confProd.js
+js/config.js
 .idea
 .github
 node_modules
-img/*
-!img/example.png

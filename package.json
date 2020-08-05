@@ -4,13 +4,14 @@
   "description": "A bot to 'play' with the stock market with fake money",
   "main": "js/main.js",
   "scripts": {
-    "start": "node js/main.js",
-    "dev": "nodemon js/main.js"
+    "start": "node js/index.js",
+    "dev": "nodemon js/index.js"
   },
   "keywords": [],
   "author": "Cryx#6546",
   "dependencies": {
     "discord.js": "^12.1.1",
+    "enmap": "^5.4.1",
     "mysql": "^2.18.1",
     "tradingview-scraper": "^0.3.0"
   },

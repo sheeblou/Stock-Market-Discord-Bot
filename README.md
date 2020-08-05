@@ -21,15 +21,18 @@ Prefix by default: `sm!`
 - `daily` To get your daily reward
 
 ### Stock Market
-- `search <name/symbol>` To search stock markets (ex: *sm!search Apple or sm!search AAPL*)
+- `search` To search for stock markets
 - `show <symbol>` To get details about a particular market (ex: *sm!show AAPL*)
 - `newtrade <buy/sell> <symbol> <price>` To trade stocks on the market(ex: *sm!newtrade buy AAPL 5000*)
 - ==>`buy` if you think the stock will go up,
 - ==>`sell` if you think the stock will go down.
 - `closetrade <ID>` (ex: *sm!closetrade 0*) Close a trade (the ID can be found with the list command). Give to you the final value of your trade.
 
+### Available aliases
+Type `help <command>`
+
 ### Okay, how do I play?
-First, you are going to look for a market. Type `sm!search <name/symbol>`.
+First, you are going to look for a market. Type `sm!search`, it will redirect you to a website.
 Then type `sm!show <symbol>` if you want more details about it.
 Now it's time to trade! Follow the instructions above for `newtrade` and `closetrade`!
 Happy trading!
