@@ -33,7 +33,7 @@ exports.run = async (client, msg, args) => {
                 if (resp[0].update.startsWith("delayed_streaming")) {
                     amount = limitedAmount;
                     edited = "delayed";
-                } else if (await mysql.isMarketLimited(resp[0].symbol)) {
+                } else if (await mysql.isMarketLimited(resp[0].symbol) || await mysql.isMarketLimited(resp[0].symbol_pro)) {
                     amount = limitedAmount;
                     edited = "limited"
                 }
@@ -48,7 +48,8 @@ exports.run = async (client, msg, args) => {
                         }]));
                 } else {
                     let vol = amount / resp[0].price;
-                    await mysql.updateList(msg, "add", [resp[0].symbol, status, vol, amount]);
+                    let usedSymb = symb.toUpperCase() === resp[0].symbol_pro ? resp[0].symbol_pro : resp[0].symbol;
+                    await mysql.updateList(msg, "add", [usedSymb, status, vol, amount]);
 
                     mysql.sql.query("UPDATE userdata SET money = ? WHERE id = ?", [money - amount, msg.author.id], function (err) {
                         if (err) throw err

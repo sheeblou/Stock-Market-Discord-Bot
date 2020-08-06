@@ -10,30 +10,31 @@ function getStockData(tagArray = []) {
         tagArray.forEach(tag => {
             tv.getTicker(tag)
                 .then((resp) => {
-                        data.push({
-                            status: 1,
-                            session: resp.current_session,
-                            update: resp.update_mode,
-                            price: resp.lp || resp.bid,
-                            symbol: resp.short_name.toUpperCase(),
-                            name: resp.description,
-                            changesPercentage: resp.chp,
-                            change: resp.ch,
-                            lastupdate: resp.last_update,
-                        })
-                        i++
-                        if (i >= size) {
-                            resolve(data)
-                        }
-
+                    data.push({
+                        status: 1,
+                        session: resp.current_session,
+                        update: resp.update_mode,
+                        price: resp.lp || resp.bid,
+                        symbol: resp.short_name.toUpperCase(),
+                        symbol_pro: resp.pro_name.toUpperCase(),
+                        name: resp.description,
+                        changesPercentage: resp.chp,
+                        change: resp.ch,
+                        lastupdate: resp.last_update,
+                    })
+                    i++
+                    if (i >= size) {
+                        resolve(data)
                     }
+
+                }
                 ).catch((err) => {
-                console.log(err)
-                data.push({
-                    status: 0
-                })
-                i++
-                if (i >= size) resolve(data)
+                    console.log(err)
+                    data.push({
+                        status: 0
+                    })
+                    i++
+                    if (i >= size) resolve(data)
             })
         })
     })
