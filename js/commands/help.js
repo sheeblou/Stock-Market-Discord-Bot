@@ -31,7 +31,7 @@ exports.run = (client, msg, args) => {
             },
             {
                 name: "*Player account*",
-                value: "`balance` / `balance @User` To admire your / user's wealth\n`list` / `list @User` Your / user's current trades\n`daily` To get your daily reward\n\n"
+                value: "`balance` / `balance @User` To admire your / user's wealth\n`list` / `list @User` Your / user's current trades\n`daily` To get your daily reward\n`vote` Vote for the bot and get a reward\n\n"
             },
             {
                 name: "*Stock Market* ",

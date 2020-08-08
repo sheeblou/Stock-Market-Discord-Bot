@@ -1,6 +1,6 @@
 package-lock.json
-confDev.js
-confProd.js
+js/confDev.js
+js/confProd.js
 js/config.js
 .idea
 .github

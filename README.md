@@ -19,6 +19,7 @@ Prefix by default: `sm!`
 - `balance` / `balance @User` To admire your / user's wealth
 - `list` / `list @User` Your / user's current trades
 - `daily` To get your daily reward
+- `vote` Vote for the bot and get a reward
 
 ### Stock Market
 - `search` To search for stock markets

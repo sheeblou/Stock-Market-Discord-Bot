@@ -5,7 +5,7 @@ exports.run = async (client, msg, args) => {
     if (accCreated) {
         msg.channel.send("You have already initialized your account!");
     } else {
-        await mysql.sql.query("INSERT INTO userdata VALUES(?,?,?,?)", [msg.author.id, 100000, '{"trades" : []}', 0],
+        await mysql.sql.query("INSERT INTO userdata VALUES(?,?,?,?,?)", [msg.author.id, 100000, '{"trades" : []}', 0, 0],
             function (err) {
                 if (err) throw err;
                 msg.channel.send("Your account has been created!");
