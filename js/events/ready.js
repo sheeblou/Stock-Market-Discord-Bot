@@ -14,8 +14,7 @@ module.exports = async (client) => {
         setInterval(() =>{
             let size = client.guilds.cache.size || client.guilds.size;
             if(size) {
-                dbl.postStats(size);
-                console.log(`STAT POSTED WITH ${size}`)
+                dbl.postStats(size).then(() => console.log(`STAT POSTED WITH ${size}`)).catch((err) => console.log(`ERROR: STATS NOT POSTED ${err}`))
             }
         }, 60*1000*30)
     }

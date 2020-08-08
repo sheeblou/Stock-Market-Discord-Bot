@@ -46,7 +46,11 @@ exports.run = (client, msg, args) => {
                 value: "First, you are going to look for a market. Type `sm!search`, it will redirect you to a website.\nThen type `sm!show <symbol>` if you want more details about it.\nNow it's time to trade! Follow the instructions above for `newtrade` and `closetrade`!\n***The symbol is not the name, but may look like this: TSLA, AAPL, MSFT... ***\nHappy trading!"
             }
         ]
-    ));
+    )).catch((e) => {
+        if(e.message === "Missing Permissions"){
+            msg.author.send("I can't send any messages in this channel! Please give me the needed permissions to send messages!");
+        }
+    });
 }
 
 

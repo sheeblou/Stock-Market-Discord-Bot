@@ -39,6 +39,9 @@ exports.run = async (client, msg) => {
                     }
                 ]))
             }
+        }).catch((err) => {
+            msg.channel.send("An error occurred with the service. I can't verify your vote! Please try later.")
+            console.error(`ERROR: Couldn't check the vote of ${msg.author.id}! ${err}`)
         });
 
     } else {
