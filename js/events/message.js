@@ -43,7 +43,7 @@ module.exports = async (client, msg) => {
                 }
 
             } catch (e) {
-                msg.channel.send("Something went terribly wrong! Please send the following text to Cryx#6546\n" +
+                msg.channel.send("Something went terribly wrong! Please send the following text to Cryx#7291\n" +
                     "```\n" + e + "\n```");
                 console.log(e);
             }
