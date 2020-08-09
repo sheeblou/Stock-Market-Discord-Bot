@@ -9,11 +9,13 @@ exports.run = async (client, msg, args) => {
         resp = resp[0];
         let status = (resp.session === "market") ? "open" : "closed";
         let update = "Unknown";
-        if(resp.update === "streaming") {
-            update = "Instantaneous";
-        }
-        else if(resp.update.startsWith("delayed_streaming")){
-            update = `Delayed by ${parseInt(resp.update.split("delayed_streaming_")[1]) / 60} minutes`
+        if(resp.update){
+            if(resp.update === "streaming") {
+                update = "Instantaneous";
+            }
+            else if(resp.update.startsWith("delayed_streaming")){
+                update = `Delayed by ${parseInt(resp.update.split("delayed_streaming_")[1]) / 60} minutes`
+            }
         }
         let field = {
             name: `Informations for ${resp.name} (${resp.symbol}): `,

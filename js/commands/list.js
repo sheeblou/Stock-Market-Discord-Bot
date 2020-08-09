@@ -16,11 +16,13 @@ exports.run = async (client, msg, args) => {
             let tradeInfo = await mysql.getTradeInfo(list, msg);
             let sumProfit = tradeInfo[2];
             for (const elem of tradeInfo[0]) {
-                let updateStream = "";
-                if (elem.update === "streaming") {
-                    updateStream = "/ **Instantaneous**";
-                } else if (elem.update.startsWith("delayed_streaming")) {
-                    updateStream = `/ **Delayed by ${parseInt(elem.update.split("delayed_streaming_")[1]) / 60} minutes**`
+                let updateStream = "/ **Unknown**";
+                if(elem.update){
+                    if (elem.update === "streaming") {
+                        updateStream = "/ **Instantaneous**";
+                    } else if (elem.update.startsWith("delayed_streaming")) {
+                        updateStream = `/ **Delayed by ${parseInt(elem.update.split("delayed_streaming_")[1]) / 60} minutes**`
+                    }
                 }
                 let arr = {
                     name: `${elem.status.toUpperCase()} - ${elem.name} - ${elem.symbol.toUpperCase()} (ID: ${elem.id})`,

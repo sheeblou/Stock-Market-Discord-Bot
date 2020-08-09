@@ -30,9 +30,11 @@ exports.run = async (client, msg, args) => {
             let limitedAmount = 10000;
             let edited;
             if (amount > limitedAmount) {
-                if (resp[0].update.startsWith("delayed_streaming")) {
-                    amount = limitedAmount;
-                    edited = "delayed";
+                if(resp[0].update) {
+                    if (resp[0].update.startsWith("delayed_streaming")) {
+                        amount = limitedAmount;
+                        edited = "delayed";
+                    }
                 } else if (await mysql.isMarketLimited(resp[0].symbol) || await mysql.isMarketLimited(resp[0].symbol_pro)) {
                     amount = limitedAmount;
                     edited = "limited"
