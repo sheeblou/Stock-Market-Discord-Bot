@@ -4,6 +4,7 @@ const coolDownSet = new Set();
 
 
 module.exports = async (client, msg) => {
+    if(msg.author.bot) return;
     let sMsg = msg.content.split(' ');
 
     if(msg.guild === null && msg.author.id !== client.user.id && !msg.content.startsWith("sm!")){
