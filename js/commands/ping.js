@@ -3,6 +3,7 @@ const smarket = require("../util/stockmarket.js");
 const mysql = require("../util/mysql.js");
 
 exports.run = async (client, msg) => {
+    let msgBot = await msg.channel.send(tool.createEmbedMessage(msg, "FF8400", "Pinging..."));
     let timeBOT = msg.client.ws.ping;
 
     let start = Date.now();
@@ -15,7 +16,7 @@ exports.run = async (client, msg) => {
 
     console.log(`Bot: ${timeBOT}ms, API: ${timeAPI}ms, MySQL: ${timeSQL}ms`)
 
-    msg.channel.send(tool.createEmbedMessage(msg, "008CFF", "Pong!", [
+    msgBot.edit(tool.createEmbedMessage(msg, "008CFF", "Pong!", [
         {
             name: `Results:`,
             value: `Bot: **${timeBOT}ms**\nStock Market - API: **${timeAPI}ms**\nDatabase: **${timeSQL}ms**`

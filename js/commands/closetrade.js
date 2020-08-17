@@ -3,7 +3,9 @@ const tool = require("../util/tools.js");
 const smarlet = require("../util/stockmarket.js");
 
 exports.run = async (client, msg, args) => {
-    if (await mysql.isAccountCreated(msg.author.id, true, msg)) {
+    let msgBot = await msg.channel.send(tool.createEmbedMessage(msg, "FF8400", "Closing trade..."));
+
+    if (await mysql.isAccountCreated(msg.author.id, true, msg, msgBot)) {
         let id = parseInt(args.split(" ")[0]);
         let titleMsg = "Error!"
         let arrMsg = {
@@ -12,7 +14,7 @@ exports.run = async (client, msg, args) => {
         }
 
         if (mysql.getTradeList(msg, msg.author.id, id) === undefined || isNaN(id)) {
-            msg.channel.send(tool.createEmbedMessage(msg, "FF0000", titleMsg, [arrMsg]));
+            msgBot.edit(tool.createEmbedMessage(msg, "FF0000", titleMsg, [arrMsg]));
         } else {
             let trade = await mysql.getTradeInfo([await mysql.getTradeList(msg, msg.author.id, id)], msg, msg.author.id);
             trade = trade[0];
@@ -38,7 +40,7 @@ exports.run = async (client, msg, args) => {
             }
 
             let earnedLost = (trade[0].profit > 0) ? ["earned", "56C114"] : ["lost", "FF0000"];
-            msg.channel.send(tool.createEmbedMessage(msg, earnedLost[1], titleMsg, [arrMsg]));
+            msgBot.edit(tool.createEmbedMessage(msg, earnedLost[1], titleMsg, [arrMsg]));
 
         }
     }

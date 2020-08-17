@@ -1,17 +1,20 @@
 const mysql = require("../util/mysql.js");
+const tool = require("../util/tools.js");
 
 exports.run = async (client, msg, args) => {
+    let msgBot = await msg.channel.send(tool.createEmbedMessage(msg, "FF8400", "Deleting account..."))
+
     let accCreated = await mysql.isAccountCreated(msg.author.id, false, msg);
     if (accCreated) {
         await mysql.sql.query("DELETE FROM userdata WHERE id = ?", [msg.author.id],
             function (err) {
                 if (err) throw err;
-                msg.channel.send("Your account has been deleted! You can recreate one with **init**");
+                msgBot.edit(tool.createEmbedMessage(msg, "56C114", "Your account has been deleted! You can recreate one with init"));
             }
         );
     }
     else{
-        msg.channel.send("Huh, I didn't find your account.");
+        msgBot.edit(tool.createEmbedMessage(msg, "FF0000", "Huh, I didn't find your account."));
     }
 }
 

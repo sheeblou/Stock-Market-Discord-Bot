@@ -1,5 +1,7 @@
 const smarket = require('./stockmarket.js')
 const auth = require('../config.js');
+const tool = require("./tools.js");
+
 const sql = require('mysql').createConnection({
     host: auth.db_host,
     database: auth.db_name,
@@ -47,7 +49,7 @@ async function getTradeList(msg, userId = msg.author.id, value = null) {
 }
 
 
-async function isAccountCreated(userId, autoMessage = false, msg) {
+async function isAccountCreated(userId, autoMessage = false, msg, msgBot = null) {
     return new Promise(((resolve, reject) => {
         sql.query("SELECT id FROM userdata WHERE id = ?", [userId],
             function(err, result){
@@ -55,7 +57,13 @@ async function isAccountCreated(userId, autoMessage = false, msg) {
 
                 let isCreated = (result[0] !== undefined);
                 if (!isCreated && autoMessage) {
-                    msg.channel.send((userId === msg.author.id) ? `You don't have any account! Please create one with the command **init**` : "This member doesn't have any account!");
+                    let errMsg = (userId === msg.author.id) ? `You don't have any account! Please create one with the command: init` : "This member doesn't have any account!"
+                    if(!msgBot) {
+                        msg.channel.send(tool.createEmbedMessage(msg, "FF0000", errMsg));
+                    }
+                    else{
+                        msgBot.edit(tool.createEmbedMessage(msg, "FF0000", errMsg));
+                    }
                 }
                 return resolve(isCreated);
             }

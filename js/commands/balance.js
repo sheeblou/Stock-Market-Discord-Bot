@@ -2,9 +2,11 @@ const mysql = require("../util/mysql.js");
 const tool = require("../util/tools.js");
 
 exports.run = async (client, msg, args) => {
+    let msgBot = await msg.channel.send(tool.createEmbedMessage(msg, "FF8400", "Fetching data..."));
     let displayName = msg.guild !== null ? (await msg.guild.members.fetch(tool.getUserId(msg, msg.content))).displayName : msg.author.username;
     let userid = displayName === msg.author.username ? msg.author.id : tool.getUserId(msg, msg.content);
-    if (await mysql.isAccountCreated(userid, true, msg)) {
+
+    if (await mysql.isAccountCreated(userid, true, msg, msgBot)) {
         let userMoney = await mysql.getUserData(userid, "money");
         userMoney = userMoney[0]["money"];
         let arr = [{
@@ -20,7 +22,7 @@ exports.run = async (client, msg, args) => {
                 value: `**$${tool.setRightNumFormat(sumProfit[1] + userMoney)}** (**${symb}$${tool.setRightNumFormat(sumProfit[2])}**)`
             })
         }
-        msg.channel.send(tool.createEmbedMessage(msg, "008CFF", "Balance", arr));
+        msgBot.edit(tool.createEmbedMessage(msg, "008CFF", "Balance", arr));
     }
 }
 

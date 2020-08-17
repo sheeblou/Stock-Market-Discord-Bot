@@ -2,15 +2,16 @@ const mysql = require("../util/mysql.js");
 const tool = require("../util/tools.js");
 
 exports.run = async (client, msg, args) => {
+    let msgBot = await msg.channel.send(tool.createEmbedMessage(msg, "FF8400", "Fetching data..."));
     let displayName = (msg.guild !== null) ? (await msg.guild.members.fetch(tool.getUserId(msg, msg.content))).displayName : msg.author.username;
     let userid = (displayName === msg.author.username) ? msg.author.id : tool.getUserId(msg, msg.content);
 
-    if (await mysql.isAccountCreated(userid, true, msg)) {
+    if (await mysql.isAccountCreated(userid, true, msg, msgBot)) {
         let list = await mysql.getTradeList(msg, userid);
         let embedList = [];
 
         if (list.length <= 0) {
-            msg.channel.send((userid !== msg.author.id) ? `${displayName} doesn't own any share!` : "You don't own any share!")
+            msgBot.edit(tool.createEmbedMessage(msg, "FF0000", (userid !== msg.author.id) ? `${displayName} doesn't own any share!` : "You don't own any share!"));
 
         } else {
             let tradeInfo = await mysql.getTradeInfo(list, msg);
@@ -30,7 +31,7 @@ exports.run = async (client, msg, args) => {
                 };
                 embedList.push(arr);
             }
-            msg.channel.send(tool.createEmbedMessage(msg, "008CFF", `Trades of ${displayName}`, embedList, `__Total profit:__ **$${tool.setRightNumFormat(sumProfit)}**`));
+            msgBot.edit(tool.createEmbedMessage(msg, "008CFF", `Trades of ${displayName}`, embedList, `__Total profit:__ **$${tool.setRightNumFormat(sumProfit)}**`));
         }
     }
 }

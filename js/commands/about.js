@@ -1,7 +1,9 @@
 const mysql = require("../util/mysql.js");
 const tool = require("../util/tools.js");
 
-exports.run = (client, msg, args) => {
+exports.run = async (client, msg, args) => {
+    let msgBot = await msg.channel.send(tool.createEmbedMessage(msg, "FF8400", "Fetching data..."))
+
     mysql.sql.query("SELECT SUM(money), COUNT(*) FROM userdata WHERE money<1000000000000",
         function(err, result){
             if (err) throw err
@@ -25,7 +27,7 @@ exports.run = (client, msg, args) => {
                     value: "**BTC :** `3CsrqouBbDToyoZH4XCq3yjs5DoCPMG3Ba`\n**ETH :** `0x8ACba400cACFb79977c607aAEFDf71De35405076`"
                 }
             ];
-            msg.channel.send(tool.createEmbedMessage(msg, "008CFF", "About the bot", arr));
+            msgBot.edit(tool.createEmbedMessage(msg, "008CFF", "About the bot", arr));
         }
     );
 }

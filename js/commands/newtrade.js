@@ -3,7 +3,9 @@ const tool = require("../util/tools.js");
 const smarket = require("../util/stockmarket.js");
 
 exports.run = async (client, msg, args) => {
-    if (await mysql.isAccountCreated(msg.author.id, true, msg)) {
+    let msgBot = await msg.channel.send(tool.createEmbedMessage(msg, "FF8400", "Creating trade..."));
+
+    if (await mysql.isAccountCreated(msg.author.id, true, msg, msgBot)) {
         let splited = args.split(" ");
         let status = splited[0];
         let symb = splited[1];
@@ -20,10 +22,10 @@ exports.run = async (client, msg, args) => {
         }
 
         if (resp[0].status === 0 || resp[0] === undefined || resp[0].price === undefined) {
-            msg.channel.send("Unknown market! Please search one with `sm!search <name/symbol>` (ex: *sm!search Apple* or *sm!search AAPL*)");
+            msgBot.edit(tool.createEmbedMessage(msg, "FF0000", "Unknown market! Please search one with sm!search"));
 
         } else if ((status !== "buy" && status !== "sell") || isNaN(amount) || amount === "" || amount < 0) {
-            msg.channel.send("Syntax error! Please try again. `sm!newtrade <buy/sell> <symbol> <amount>`");
+            msgBot.edit(tool.createEmbedMessage(msg, "FF0000","Syntax error! Please try again. sm!newtrade <buy/sell> <symbol> <amount>"));
 
         } else {
             let money = await mysql.getUserData(msg.author.id, "money");
@@ -43,7 +45,7 @@ exports.run = async (client, msg, args) => {
             money = money[0]["money"];
             if (money - amount >= 0) {
                 if (list.length >= 15) {
-                    msg.channel.send(tool.createEmbedMessage(msg, "FF0000", "Payement refused!",
+                    msgBot.edit(tool.createEmbedMessage(msg, "FF0000", "Payment refused!",
                         [{
                             name: `List full!`,
                             value: `You have too many shares! (Max:15)`
@@ -56,17 +58,17 @@ exports.run = async (client, msg, args) => {
                     mysql.sql.query("UPDATE userdata SET money = ? WHERE id = ?", [money - amount, msg.author.id], function (err) {
                         if (err) throw err
                     });
-                    msg.channel.send(tool.createEmbedMessage(msg, "56C114", "Payement accepted!",
+                    msgBot.edit(tool.createEmbedMessage(msg, "56C114", "Payment accepted!",
                         [{
                             name: `${resp[0].name} - ${symb.toUpperCase()}`,
                             value: `You now own **${vol}** shares from this stock! (Type: ${status.toUpperCase()})`
                         }]));
                     if (edited === "limited" || edited === "delayed") {
-                        msg.channel.send(`**Warning, you are using a ${edited} market. Only $10K has been deducted from your balance.**`)
+                        msgBot.edit(tool.createEmbedMessage(msg, "FF0000", `Warning, you are using a ${edited} market. Only $10K has been deducted from your balance.`));
                     }
                 }
             } else {
-                msg.channel.send(tool.createEmbedMessage(msg, "FF0000", "Payement refused!",
+                msgBot.edit(tool.createEmbedMessage(msg, "FF0000", "Payment refused!",
                     [{
                         name: `${resp[0].name} - ${symb.toUpperCase()}`,
                         value: `You don't have enough money!`
