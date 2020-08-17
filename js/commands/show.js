@@ -1,5 +1,6 @@
 const tool = require("../util/tools.js");
 const smarket = require("../util/stockmarket.js");
+const plot = require("../util/plot.js");
 
 exports.run = async (client, msg, args) => {
     let tag = args.split(' ')[0];
@@ -21,9 +22,12 @@ exports.run = async (client, msg, args) => {
             name: `Informations for ${resp.name} (${resp.symbol}): `,
             value: `__Price__: **$${tool.setRightNumFormat(resp.price)}** (Change: **${resp.changesPercentage}%** => **$${tool.setRightNumFormat(resp.change)}**)\n__Status__: Currently ${status}\n__Update__: ${update}`
         }
-        let defaultDescription = `Chart available [here](https://tradingview.com/chart/?symbol=${resp.symbol}).`
-
-        msg.channel.send(tool.createEmbedMessage(msg, "008CFF", "Details", [field], defaultDescription))
+        plot.getChart(tag, msg).then(() => {
+            msg.channel.send(tool.createEmbedMessage(msg, "008CFF", "Details", [field], `Chart available! (Tradingview's chart available [here](https://tradingview.com/chart/?symbol=${resp.symbol}))`, img=`${msg.id}.png`))
+                .then(() => plot.deleteCharts());
+        }).catch(() =>{
+            msg.channel.send(tool.createEmbedMessage(msg, "008CFF", "Details", [field], `Chart available [here](https://tradingview.com/chart/?symbol=${resp.symbol}).`))
+        });
 
     } catch (e) {
         msg.channel.send("Nothing was found. Please try again with an another symbol.");

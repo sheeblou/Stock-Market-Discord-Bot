@@ -10,10 +10,12 @@
   "keywords": [],
   "author": "Cryx#7291",
   "dependencies": {
+    "axios": "^0.19.2",
     "dblapi.js": "^2.4.0",
     "discord.js": "^12.1.1",
     "enmap": "^5.4.1",
     "mysql": "^2.18.1",
+    "plotly": "^1.0.6",
     "tradingview-scraper": "^0.3.0"
   },
   "devDependencies": {
