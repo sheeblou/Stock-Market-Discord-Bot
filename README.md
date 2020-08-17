@@ -10,6 +10,7 @@ Prefix by default: `sm!`
 ### Basics
 - `help` Gives you the help you need!
 - `init` The command to get started
+- `del` Delete your account from the database (__Warning: Your account will be instantly wiped out from the database without any confirmation!__)
 - `prefix <prefix>` Change my prefix to the choosen one!
 *Note: Mention me with `prefix` to know my prefix! (@Stock Market prefix)*
 - `ping` To see the latency between you, the bot and the API
