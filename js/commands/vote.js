@@ -2,13 +2,16 @@ const mysql = require("../util/mysql.js");
 const tool = require("../util/tools.js");
 const auth = require("../config.js")
 const DBL = require("dblapi.js");
+let dbl;
 
 
 exports.run = async (client, msg) => {
     if(!(await mysql.isAccountCreated(msg.author.id, true, msg))){
         return;
     }
-    const dbl = new DBL(auth.topgg_token, client);
+    if(!dbl){
+        dbl = new DBL(auth.topgg_token, client);
+    }
     let data = await mysql.getUserData(msg.author.id, ["votetime", "money"]);
     let voteTime = data[0]["votetime"];
     let money = data[0]["money"];
