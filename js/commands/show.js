@@ -30,7 +30,7 @@ exports.run = async (client, msg, args) => {
                 }
                 plot.getChart(tag, msg).then(() => {
                     msgBot.edit(tool.createEmbedMessage(msg, "008CFF", "Details", [field], `Chart available! (Tradingview's chart available [here](https://tradingview.com/chart/?symbol=${resp.symbol}))`, img=`${msg.id}.png`))
-                        .then(() => plot.deleteCharts());
+                    msg.channel.send(tool.createEmbedMessage(msg, "008CFF", "", [{name: "Chart", value: resp.symbol}], "", img=`${msg.id}.png`)).then(() => plot.deleteCharts());
                 }).catch(() =>{
                     msgBot.edit(tool.createEmbedMessage(msg, "008CFF", "Details", [field], `Chart available [here](https://tradingview.com/chart/?symbol=${resp.symbol}).`))
                 });
