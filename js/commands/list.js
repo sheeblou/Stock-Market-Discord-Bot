@@ -3,15 +3,18 @@ const tool = require("../util/tools.js");
 
 exports.run = async (client, msg, args) => {
     let msgBot = await msg.channel.send(tool.createEmbedMessage(msg, "FF8400", "Fetching data..."));
-    let displayName = (msg.guild !== null) ? (await msg.guild.members.fetch(tool.getUserId(msg, msg.content))).displayName : msg.author.username;
-    let userid = (displayName === msg.author.username) ? msg.author.id : tool.getUserId(msg, msg.content);
+    let targetUser = await tool.getUser(msg, args, msgBot);
+    if(!targetUser){
+        return;
+    }
+    let displayName = (msg.guild !== null) ? targetUser.displayName : msg.author.username;
 
-    if (await mysql.isAccountCreated(userid, true, msg, msgBot)) {
-        let list = await mysql.getTradeList(msg, userid);
+    if (await mysql.isAccountCreated(targetUser.id, true, msg, msgBot)) {
+        let list = await mysql.getTradeList(msg, targetUser.id);
         let embedList = [];
 
         if (list.length <= 0) {
-            msgBot.edit(tool.createEmbedMessage(msg, "FF0000", (userid !== msg.author.id) ? `${displayName} doesn't own any share!` : "You don't own any share!"));
+            msgBot.edit(tool.createEmbedMessage(msg, "FF0000", (targetUser.id !== msg.author.id) ? `${displayName} doesn't own any share!` : "You don't own any share!"));
 
         } else {
             let tradeInfo = await mysql.getTradeInfo(list, msg);

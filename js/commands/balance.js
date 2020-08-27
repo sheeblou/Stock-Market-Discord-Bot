@@ -3,11 +3,14 @@ const tool = require("../util/tools.js");
 
 exports.run = async (client, msg, args) => {
     let msgBot = await msg.channel.send(tool.createEmbedMessage(msg, "FF8400", "Fetching data..."));
-    let displayName = msg.guild !== null ? (await msg.guild.members.fetch(tool.getUserId(msg, msg.content))).displayName : msg.author.username;
-    let userid = displayName === msg.author.username ? msg.author.id : tool.getUserId(msg, msg.content);
+    let targetUser = await tool.getUser(msg, args, msgBot);
+    if(!targetUser){
+        return;
+    }
+    let displayName = (msg.guild !== null) ? targetUser.displayName : msg.author.username;
 
-    if (await mysql.isAccountCreated(userid, true, msg, msgBot)) {
-        let userMoney = await mysql.getUserData(userid, "money");
+    if (await mysql.isAccountCreated(targetUser.id, true, msg, msgBot)) {
+        let userMoney = await mysql.getUserData(targetUser.id, "money");
         userMoney = userMoney[0]["money"];
         let arr = [{
             name: `Balance of ${displayName}:`,
