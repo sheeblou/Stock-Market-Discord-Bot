@@ -1,6 +1,5 @@
 const mysql = require("../util/mysql.js");
 const tool = require("../util/tools.js");
-const smarlet = require("../util/stockmarket.js");
 
 exports.run = async (client, msg, args) => {
     let msgBot = await msg.channel.send(tool.createEmbedMessage(msg, "FF8400", "Closing trade..."));
