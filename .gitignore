@@ -5,3 +5,4 @@ js/config.js
 .idea
 .github
 node_modules
+.eslintrc.json
