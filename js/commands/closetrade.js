@@ -13,7 +13,7 @@ exports.run = async (client, msg, args) => {
 			value: 'You asked for a trade which doesn\'t exist! Please try again. (Command **list** to see IDs)',
 		};
 
-		if (mysql.getTradeList(msg, msg.author.id, id) === undefined) {
+		if (isNaN(id) || mysql.getTradeList(msg, msg.author.id, id) === undefined) {
 			msgBot.edit(tool.createEmbedMessage(msg, 'FF0000', titleMsg, [arrMsg]));
 		} else {
 			const list = await mysql.getTradeList(msg, msg.author.id, id);
