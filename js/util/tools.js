@@ -27,18 +27,20 @@ async function getUser(msg, txt, msgBot = undefined) {
 				name: 'Invalid argument',
 				value: '',
 			}];
+			let userId = txt;
 			if (txt.substring(0, 3).concat(txt.substring(txt.length - 1, txt.length)) === '<@!>') {
-				try {
-					return await msg.guild.members.fetch(txt.substring(3, txt.length - 1));
-				} catch (e) {
-					if (msgBot) {
-						arrTxt[0].value = 'Couldn\'t fetch the data of the target! (Is the user on the server?)';
-						msgBot.edit(createEmbedMessage(msg, 'FF0000', 'Error!', arrTxt));
-					}
+				userId = userId.substring(3, txt.length - 1);
+			} else if (txt.substring(0, 2).concat(txt.substring(txt.length - 1, txt.length)) === '<@>') {
+				userId = userId.substring(2, txt.length - 1);
+			}
+			try {
+				return await msg.guild.members.fetch(userId);
+			} catch (e) {
+				if (msgBot) {
+					arrTxt[0].value = 'Couldn\'t fetch the data of the target! (Is the user on the server? / Did you mention the user?)';
+					msgBot.edit(createEmbedMessage(msg, 'FF0000', 'Error!', arrTxt));
+					return;
 				}
-			} else if (msgBot) {
-				arrTxt[0].value = 'Couldn\'t fetch the data of the target! (You have to mention the user!)';
-				msgBot.edit(createEmbedMessage(msg, 'FF0000', 'Error!', arrTxt));
 			}
 		} else {
 			// I know, it sounds intuitive, I could use msg.author
