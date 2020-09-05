@@ -17,10 +17,12 @@ exports.run = async (client, msg, args) => {
 			return;
 		}
 		const aliasesStatus = {
-			s: 'status',
 			b: 'buy',
+			buy: 'buy',
+			s: 'sell',
+			sell: 'sell',
 		};
-		status = aliasesStatus[status] || status;
+		status = aliasesStatus[status] || undefined;
 
 		if (resp[0].status === 0 || !resp[0] || !resp[0].price) {
 			msgBot.edit(tool.createEmbedMessage(msg, 'FF0000', 'Unknown market! Please search one with sm!search'));
