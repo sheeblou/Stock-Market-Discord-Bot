@@ -48,7 +48,7 @@ module.exports = async (client, msg) => {
 		}
 
 		if (msg.content.startsWith(`<@!${client.user.id}>`) || msg.content.startsWith(`<@${client.user.id}>`)) {
-			msg.channel.send(`My prefix is **${r}**`);
+			msg.channel.send(`My prefix is \`${r[0]}\``);
 		}
 	});
 };

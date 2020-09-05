@@ -10,17 +10,22 @@ exports.run = async (client, msg, args) => {
 	}
 
 	if (args !== 'sm!') {
+		const regexResult = args.match('^[a-zA-Z0-9!?^;:@#€£§$&%()+-=<>~.,/"]*$');
 		try {
-			// Escape is deprecated, I beg you, don't use it
-			mysql.setPrefixServer(msg.guild.id, decodeURIComponent(escape(args)));
+			if (!(regexResult && regexResult[0] === args)) {
+				msg.channel.send('Error! Invalid characters used!');
+				return;
+			}
+			mysql.setPrefixServer(msg.guild.id, args);
 		} catch (e) {
-			msg.channel.send('The prefix asked is not in the right format! (Please use the latin alphabet)');
+			msg.channel.send('An unhandled error occured! Please try again with another prefix');
+			console.log(e);
 			return;
 		}
 	} else {
 		mysql.sql.query('DELETE FROM prefixserver WHERE id = ?', [msg.guild.id], (err) => { if (err) throw err; });
 	}
-	msg.channel.send(`My prefix is now **${args}**`);
+	msg.channel.send(`My prefix is now \`${args}\``);
 };
 
 exports.config = {
