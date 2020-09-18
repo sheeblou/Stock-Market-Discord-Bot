@@ -32,6 +32,9 @@ exports.run = async (client, msg, args) => {
 						updateStream = `/ **Delayed by ${parseInt(tradeData[i].update.split('delayed_streaming_')[1], 10) / 60} minutes**`;
 					}
 				}
+				if(!tradeData[i].status || (tradeData[i].status.toUpperCase() !== "SELL" && tradeData[i].status.toUpperCase() !== "BUY")){
+					tradeData[i].status = "BUY";
+				}
 				const arr = {
 					name: `${tradeData[i].status.toUpperCase()} - ${tradeData[i].name} - ${tradeData[i].symbol.toUpperCase()} (ID: ${tradeData[i].id})`,
 					value: `__Status__: ${(tradeData[i].session === 'market') ? '**Market open**' : '**Market closed**'} ${updateStream}\n__Change__: **${tool.setRightNumFormat(tradeData[i].profitPercentage)}%**\n__By share__: Paid: **$${tool.setRightNumFormat(tradeData[i].haspaid / tradeData[i].volume)}**, Now: **$${tool.setRightNumFormat(tradeData[i].shownWorthTrade / tradeData[i].volume)}** (Profit: **$${(tool.setRightNumFormat((tradeData[i].profit / tradeData[i].volume)))}**)\n__Your trade__: Paid: **$${tool.setRightNumFormat(tradeData[i].haspaid)}**, Now: **$${tool.setRightNumFormat(tradeData[i].shownWorthTrade)}** (Profit: **$${tool.setRightNumFormat(tradeData[i].profit)}**)\n`,
