@@ -16,7 +16,7 @@ exports.run = async (client, msg, args) => {
 			name: `Balance of ${displayName}:`,
 			value: `**$${tool.setRightNumFormat(userMoney)}**`,
 		}];
-		const list = await mysql.getTradeList(msg);
+		const list = await mysql.getTradeList(msg, targetUser.id);
 		if (!list) {
 			msgBot.edit(tool.createEmbedMessage(msg, 'FF0000', 'Something went terribly wrong! Please try again or contact the support.'));
 			return;
