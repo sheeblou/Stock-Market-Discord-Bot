@@ -1,7 +1,8 @@
 exports.run = async (client, msg, args) => {
 	const splited = args.split(' ');
-	const user = client.users.cache.get(splited[0]);
-	user.send(args.substr((splited[0]).length + 1));
+	client.users.fetch(splited[0])
+		.then(user => user.send(args.substr((splited[0]).length + 1)))
+		.catch(err => console.log("Couldn't send mp"))	
 };
 
 exports.config = {

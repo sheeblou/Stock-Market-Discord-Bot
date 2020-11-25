@@ -27,29 +27,32 @@ exports.run = (client, msg, args) => {
 		[
 			{
 				name: '*Basics*',
-				value: "`help` You're here \n"
-          + '`init` The command to get started \n'
-          + '`del` Delete your account from the database (__Warning: Your account will be instantly wiped out from the database without any confirmation!__)\n'
-          + '`prefix <prefix>` Change my prefix to the choosen one!\n'
+				value: "- `help` You're here \n"
+          + '- `init` The command to get started \n'
+          + '- `del` Delete your account from the database (__Warning: Your account will be instantly wiped out from the database without any confirmation!__)\n'
+          + '- `prefix <prefix>` Change my prefix to the choosen one!\n'
           + '*Note: Mention me with `prefix` to know my prefix! (@Stock Market prefix)*\n'
-          + '`ping` To see the latency between you, the bot and the API\n'
-          + '`about` About the bot\n',
+          + '- `ping` To see the latency between you, the bot and the API\n'
+          + '- `about` About the bot\n',
 			},
 			{
 				name: '*Player account*',
-				value: "`balance` / `balance @User` To admire your / user's wealth\n"
-          + "`list` / `list @User` Your / user's current trades\n"
-          + '`daily` To get your daily reward\n'
-          + '`vote` Vote for the bot and get a reward\n',
+				value: "- `balance` / `balance @User` To admire your / user's wealth\n"
+          + "- `list` / `list @User` Your / user's current trades\n"
+          + '- `daily` To get your daily reward\n'
+          + '- `vote` Vote for the bot and get a reward\n'
+			+ '- `leaderboard` Who is the richest in your server?\n',
 			},
 			{
 				name: '*Stock Market* ',
-				value: '`search` To search for stock markets\n'
-          + '`show <symbol>` To get details about a particular market (ex: *sm!show AAPL*)\n'
-          + '`newtrade <buy/sell> <symbol> <price>` To trade stocks on the market(ex: *sm!newtrade buy AAPL 5000*)\n'
+				value: '- `search` To search for stock markets\n'
+          + '- `show <symbol>` To get details about a particular market (ex: *sm!show AAPL*)\n'
+          + '- `newtrade <buy/sell> <symbol> <price> <optional: share/s>` To trade stocks on the market(ex: `sm!newtrade buy AAPL 5000`)\n'
           + '==>`buy` if you think the stock will go up, \n'
           + '==>`sell` if you think the stock will go down.\n'
-          + '`closetrade <ID>` (ex: *sm!closetrade 0*) Close a trade (the ID can be found with the `list` command). Give to you the final value of your trade.\n',
+		  + 'Adding "s" or "share" at the end of the command will specify an amount of shares to buy/sell '
+		  + '(ex: `sm!newtrade buy BTCUSD 1 s` will buy the value of 1 Bitcoin)\n'
+          + '- `closetrade <ID>` (ex: *sm!closetrade 0*) Close a trade (the ID can be found with the `list` command). Give to you the final value of your trade.\n',
 			},
 			{
 				name: '*Available aliases*',

@@ -2,6 +2,19 @@ const tdvApi = require('tradingview-scraper');
 
 const tv = new tdvApi.TradingViewAPI();
 
+function deleteSubscriptions(){
+	return new Promise((resolve, reject) => {
+		if(tv.subscriptions.length > 50 ){
+			for(let i = 0; i < tv.subscriptions.length; i++) {
+				console.log(i, tv.subscriptions.length)
+				delete tv.tickerData[tv.subscriptions[i]]
+			}
+			tv.subscriptions = [];
+		}
+		resolve();
+	});
+}
+
 function getStockData(tagArray = []) {
 	const data = [];
 	return new Promise((resolve) => {
@@ -25,6 +38,12 @@ function getStockData(tagArray = []) {
 					});
 					i++;
 					if (i >= size) {
+						console.log(tv.subscriptions, tv.subscriptions.length)
+						// console.log("v1", tv.tickerData, tv.subscriptions, tv.subscriptions.length)
+						// deleteSubscriptions().then(() => {
+						// 	console.log("v2", tv.tickerData, tv.subscriptions, tv.subscriptions.length)
+						// 	resolve(data);
+						// })
 						resolve(data);
 					}
 				}).catch((err) => {

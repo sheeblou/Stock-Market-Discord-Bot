@@ -21,12 +21,12 @@ exports.run = async (client, msg) => {
 		dbl.hasVoted(msg.author.id).then((voted) => {
 			if (voted) {
 				console.log('Someone has voted for the bot!');
-				const newBalance = money + 2500;
+				const newBalance = money + 1000;
 				const newVoteTime = dateNow + 43200;
 				mysql.sql.query('UPDATE userdata SET money = ?, votetime = ? WHERE id = ?', [newBalance, newVoteTime, msg.author.id], (err) => { if (err) throw err; });
 				msg.channel.send(tool.createEmbedMessage(msg, '56C114', 'Vote for the bot!', [{
 					name: 'You have received your reward!',
-					value: 'Thank you for your vote, you have received $2,500!',
+					value: 'Thank you for your vote, you have received $1,000!',
 				}]));
 			} else {
 				msg.channel.send(tool.createEmbedMessage(msg, '008CFF', 'Vote for the bot!', [
@@ -61,5 +61,5 @@ exports.config = {
 	name: 'Vote',
 	category: 'Basics',
 	usage: 'vote',
-	description: 'Get an extra $2,500 by voting for the bot!',
+	description: 'Get an extra $1,000 by voting for the bot!',
 };

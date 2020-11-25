@@ -1,16 +1,21 @@
 const discord = require('discord.js');
 
-function createEmbedMessage(msg, color, title, content = [], desc = null, img = null) {
-	const embed = new discord.MessageEmbed()
+function createEmbedMessage(msg, color, title, content = [], desc = null,
+	img = null, footer = null) {
+	let embed = new discord.MessageEmbed()
 		.setColor(color)
 		.setDescription(desc || '')
 		.setAuthor(title || '')
 		.addFields(content);
 
 	if (img) {
-		return embed
+		embed = embed
 			.attachFiles(`img/${img}`)
 			.setImage(`attachment://${img}`);
+	}
+	if (footer) {
+		embed = embed
+			.setFooter(footer);
 	}
 
 	return embed;
@@ -38,8 +43,7 @@ async function getUser(msg, txt, msgBot = undefined) {
 			} catch (e) {
 				if (msgBot) {
 					arrTxt[0].value = 'Couldn\'t fetch the data of the target! (Is the user on the server? / Did you mention the user?)';
-					msgBot.edit(createEmbedMessage(msg, 'FF0000', 'Error!', arrTxt));
-					return;
+					return msgBot.edit(createEmbedMessage(msg, 'FF0000', 'Error!', arrTxt));
 				}
 			}
 		} else {
@@ -51,8 +55,17 @@ async function getUser(msg, txt, msgBot = undefined) {
 	return msg.author;
 }
 
+function getSpecificColumn(arr, index) {
+	const result = [];
+	arr.forEach((v) => {
+		result.push(v[index]);
+	});
+	return result;
+}
+
 module.exports = {
 	createEmbedMessage,
 	setRightNumFormat,
 	getUser,
+	getSpecificColumn,
 };

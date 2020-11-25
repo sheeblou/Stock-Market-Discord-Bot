@@ -11,13 +11,13 @@ exports.run = async (client, msg) => {
 		const delay = parseInt(dailyTime, 10) - dateNow;
 
 		if (delay < 0) {
-			const newBalance = money + 2500;
+			const newBalance = money + 1000;
 			const newDailyTime = dateNow + 86400;
 
 			await mysql.sql.query('UPDATE userdata SET money = ?, dailytime = ? WHERE id = ?', [newBalance, newDailyTime, msg.author.id], (err) => { if (err) throw err; });
 			msg.channel.send(tool.createEmbedMessage(msg, '56C114', 'Your daily reward!', [{
 				name: 'You have received your daily reward!',
-				value: 'Thank you for your fidelity, you have received $2,500!',
+				value: 'Thank you for your fidelity, you have received $1,000!',
 			},
 			]));
 		} else {

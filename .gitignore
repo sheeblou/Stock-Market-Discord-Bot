@@ -1,8 +1,6 @@
 package-lock.json
-js/confDev.js
-js/confProd.js
-js/config.js
 .idea
 .github
 node_modules
+js/config.js
 .eslintrc.json

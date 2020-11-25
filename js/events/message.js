@@ -8,7 +8,8 @@ module.exports = async (client, msg) => {
 
 	if (msg.guild === null && msg.author.id !== client.user.id && !msg.content.startsWith('sm!')) {
 		console.log(`DM: ${msg.author.id} - ${msg.content}`);
-		client.users.cache.get(client.config.ownerID).send(`${msg.author.id} (${msg.author.username}#${msg.author.discriminator}) - ${msg.content}`);
+		const owner = await client.users.fetch(client.config.ownerID);
+		owner.send(`${msg.author.id} (${msg.author.username}#${msg.author.discriminator}) - ${msg.content}`);
 	}
 
 	const idServer = (msg.guild !== null) ? msg.guild.id : '-1';
@@ -21,14 +22,15 @@ module.exports = async (client, msg) => {
 				const cmd = client.commands.get(cmdTxt) || client.commands.get(client.aliases.get(cmdTxt));
 				if (!cmd) { return; }
 				if (cmd.config.guildOnly && msg.guild === null) {
-					msg.channel.send("You can't use that command in a pm!");
+					return msg.channel.send("You can't use this command in a pm!");
 				}
 				if (cmd.config.permissions) {
-					if (cmd.config.permissions.BOT_PERMISSIONS === 'OWNER' && msg.author.id !== client.config.ownerID) {
-						msg.channel.send('Only the owner of the bot can use this command!');
+					if (cmd.config.permissions.BOT_PERMISSIONS !== undefined && cmd.config.permissions.BOT_PERMISSIONS.includes('OWNER') && msg.author.id !== client.config.ownerID) {
+						return msg.channel.send('Only the owner of the bot can use this command!');
 					} if (cmd.config.permissions.SERVER_PERMISSIONS) {
 						const perms = msg.channel.permissionsFor(msg.author.id);
-						if (!perms.has('ADMINISTRATOR') && !perms.has(cmd.config.permissions.SERVER_PERMISSIONS)) { msg.channel.send(`You don't have enough permissions! (You need to have \`ADMINISTRATOR\` or \`${cmd.config.permissions.SERVER_PERMISSIONS}\` permission on the server)`); }
+						if (!perms.has('ADMINISTRATOR') && !perms.has(cmd.config.permissions.SERVER_PERMISSIONS)) {
+							return msg.channel.send(`You don't have enough permissions! (You need to have \`ADMINISTRATOR\` or \`${cmd.config.permissions.SERVER_PERMISSIONS}\` permission on the server)`); }
 					}
 				}
 

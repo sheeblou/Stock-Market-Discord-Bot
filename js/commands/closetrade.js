@@ -23,7 +23,7 @@ exports.run = async (client, msg, args) => {
 			if (!trade[0]) {
 				return;
 			}
-			if (trade[0].worthTrade !== undefined && trade !== '-1') {
+			if (!isNaN(trade[0].worthTrade) && !isNaN(trade[0].profit) && trade !== '-1') {
 				titleMsg = 'Trade closed';
 				arrMsg = {
 					name: `Trade n°**${id}** closed.`,
@@ -32,7 +32,7 @@ exports.run = async (client, msg, args) => {
 				await mysql.updateMoney(msg, msg.author.id, trade[0].worthTrade);
 				await mysql.updateList(msg, 'del', [id]);
 				await balCmd.run(client, msg);
-			} else if (trade !== '-1') {
+			} else if (trade !== '-1' && (isNaN(trade[0].worthTrade) || isNaN(trade[0].profit))) {
 				arrMsg = {
 					name: `Failed to close the trade n°**${id}**!`,
 					value: 'The value retrieved by the service is invalid, please try later. If this error persist, please contact the support.',

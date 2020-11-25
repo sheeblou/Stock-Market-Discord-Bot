@@ -29,9 +29,9 @@ async function updateMoney(msg, userID, num, isAdding = true) {
 	sql.query('UPDATE userdata SET money = ? WHERE id = ?', [money, userID], (err) => { if (err) throw err; });
 }
 
-async function getTradeList(msg, userId = msg.author.id, value = null) {
+async function getTradeList(msg, userId = msg.author.id, value = null, prelist = null) {
 	try {
-		let list = await getUserData(userId, 'trades');
+		let list = prelist || await getUserData(userId, 'trades');
 		list = list[0].trades;
 		list = JSON.parse(list).trades;
 		return (Number.isInteger(value)) ? list.find((elem) => elem.id === value) : list;

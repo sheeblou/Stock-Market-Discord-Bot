@@ -2,55 +2,68 @@ const mysql = require('../util/mysql.js');
 const tool = require('../util/tools.js');
 const smarket = require('../util/stockmarket.js');
 
+function editStatus(status) {
+	const aliasesStatus = {
+		b: 'buy',
+		buy: 'buy',
+		s: 'sell',
+		sell: 'sell',
+	};
+	return aliasesStatus[status] || undefined;
+}
+
+async function determinePriceToPay(amount, str, infoStock) {
+	const limitedAmount = 10000;
+	let edited;
+	let tempAmount = parseFloat(amount || -1);
+	if (str === 's' || str === 'share') {
+		tempAmount = amount * infoStock.price;
+	}
+	if (amount > limitedAmount) {
+		if (infoStock.update) {
+			if (infoStock.update.startsWith('delayed_streaming')) {
+				tempAmount = limitedAmount;
+				edited = 'delayed';
+			}
+		} else if (await mysql.isMarketLimited(infoStock.symbol)
+			|| await mysql.isMarketLimited(infoStock.symbol_pro)) {
+			tempAmount = limitedAmount;
+			edited = 'limited';
+		}
+	}
+	return [tempAmount, edited];
+}
+
 exports.run = async (client, msg, args) => {
 	const msgBot = await msg.channel.send(tool.createEmbedMessage(msg, 'FF8400', 'Creating trade...'));
 
 	if (await mysql.isAccountCreated(msg.author.id, true, msg, msgBot)) {
 		const splited = args.split(' ');
-		let status = splited[0];
+		const status = editStatus(splited[0]);
 		const symb = splited[1];
-		let amount = splited[2];
+		const byShare = splited[3];
 		const resp = await smarket.getStockData([symb]);
 		const list = await mysql.getTradeList(msg, msg.author.id);
 		if (!list) {
-			msgBot.edit(tool.createEmbedMessage(msg, 'FF0000', 'Something went terribly wrong! Please try again or contact the support.'));
-			return;
+			return msgBot.edit(tool.createEmbedMessage(msg, 'FF0000', 'Something went terribly wrong! Please try again or contact the support.'));
 		}
-		const aliasesStatus = {
-			b: 'buy',
-			buy: 'buy',
-			s: 'sell',
-			sell: 'sell',
-		};
-		status = aliasesStatus[status] || undefined;
-
 		if (resp[0].status === 0 || !resp[0] || !resp[0].price) {
-			msgBot.edit(tool.createEmbedMessage(msg, 'FF0000', 'Unknown market! Please search one with sm!search'));
-		} else if (!status || !amount || amount < 0) {
-			msgBot.edit(tool.createEmbedMessage(msg, 'FF0000', 'Syntax error! Please try again. sm!newtrade <buy/sell> <symbol> <amount>'));
+			return msgBot.edit(tool.createEmbedMessage(msg, 'FF0000', 'Unknown market! Please search one with sm!search'));
+		}
+		const infoPrice = await determinePriceToPay(splited[2], byShare, resp[0]);
+		const amount = infoPrice[0];
+		const edited = infoPrice[1];
+		if (!status || !amount || amount < 0) {
+			msgBot.edit(tool.createEmbedMessage(msg, 'FF0000', 'Syntax error! Please try again. sm!newtrade <buy/sell> <symbol> <amount> <optional: share/s>'));
 		} else {
 			let money = await mysql.getUserData(msg.author.id, 'money');
-			const limitedAmount = 10000;
-			let edited;
-			if (amount > limitedAmount) {
-				if (resp[0].update) {
-					if (resp[0].update.startsWith('delayed_streaming')) {
-						amount = limitedAmount;
-						edited = 'delayed';
-					}
-				} else if (await mysql.isMarketLimited(resp[0].symbol)
-          || await mysql.isMarketLimited(resp[0].symbol_pro)) {
-					amount = limitedAmount;
-					edited = 'limited';
-				}
-			}
 			money = money[0].money;
 			if (money - amount >= 0) {
 				if (list.length >= 15) {
 					msgBot.edit(tool.createEmbedMessage(msg, 'FF0000', 'Payment refused!',
 						[{
 							name: 'List full!',
-							value: 'You have too many shares! (Max:15)',
+							value: 'You own too many trades! (Max:15)',
 						}]));
 				} else {
 					const vol = amount / resp[0].price;
@@ -67,11 +80,11 @@ exports.run = async (client, msg, args) => {
 							value: `You now own **${vol}** shares from this stock! (Type: ${status.toUpperCase()})`,
 						}]));
 					if (edited === 'limited' || edited === 'delayed') {
-						msgBot.edit(tool.createEmbedMessage(msg, 'FF0000', `Warning, you are using a ${edited} market. Only $10K has been deducted from your balance.`));
+						msg.channel.send(tool.createEmbedMessage(msg, 'FF0000', `Warning, you are using a ${edited} market. Only $10K have been deducted from your balance.`));
 					}
 				}
 			} else {
-				msgBot.edit(tool.createEmbedMessage(msg, 'FF0000', 'Payment refused!',
+				return msgBot.edit(tool.createEmbedMessage(msg, 'FF0000', 'Payment refused!',
 					[{
 						name: `${resp[0].name} - ${symb.toUpperCase()}`,
 						value: 'You don\'t have enough money! (Or an invalid amount has been entered!)',
@@ -86,8 +99,12 @@ exports.config = {
 	category: 'Stock Market',
 	usage: 'newtrade',
 	aliases: ['nt'],
-	description: 'To trade stocks on the market (ex: sm!newtrade buy AAPL 5000)\n'
+	description: 'To trade stocks on the market '
+		+ '(`sm!newtrade buy AAPL 5000`)\n'
         + '==>buy if you think the stock will go up,\n'
-        + '==>sell if you think the stock will go down.',
-	syntax: '<buy/sell> <symbol> <price>\nnewtrade <b/s> <symbol> <price>',
+        + '==>sell if you think the stock will go down.\n'
+		+ 'Adding "s" or "share" at the end of the command will specify an amount of shares to buy/sell '
+		+ '(ex: `sm!newtrade buy BTCUSD 1 s` will exactly buy 1 bitcoin)',
+	syntax: '<buy/sell> <symbol> <price> <optional: share/s>\n'
+		+ 'newtrade <b/s> <symbol> <price> <optional: share/s>',
 };

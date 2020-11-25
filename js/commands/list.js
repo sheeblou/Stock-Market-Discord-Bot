@@ -32,8 +32,8 @@ exports.run = async (client, msg, args) => {
 						updateStream = `/ **Delayed by ${parseInt(tradeData[i].update.split('delayed_streaming_')[1], 10) / 60} minutes**`;
 					}
 				}
-				if(!tradeData[i].status || (tradeData[i].status.toUpperCase() !== "SELL" && tradeData[i].status.toUpperCase() !== "BUY")){
-					tradeData[i].status = "BUY";
+				if (!tradeData[i].status || (tradeData[i].status.toUpperCase() !== 'SELL' && tradeData[i].status.toUpperCase() !== 'BUY')) {
+					tradeData[i].status = 'BUY';
 				}
 				const arr = {
 					name: `${tradeData[i].status.toUpperCase()} - ${tradeData[i].name} - ${tradeData[i].symbol.toUpperCase()} (ID: ${tradeData[i].id})`,
