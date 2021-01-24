@@ -1,5 +1,6 @@
 const DBL = require('dblapi.js');
 const mysql = require('../util/mysql.js');
+const smarket = require('../util/stockmarket.js');
 
 module.exports = async (client) => {
 	try {
@@ -18,6 +19,10 @@ module.exports = async (client) => {
 		if (process.env.npm_lifecycle_event !== 'dev') {
 			const dbl = new DBL(client.config.topggToken, client);
 			setInterval(() => {
+				mysql.postStats(client);
+				smarket.deleteSubscriptions()
+					.then(() => console.log("SUBSCRIPTIONS DELETED"))
+					.catch((err) => console.log(`SUBSCRIPTIONS COULDN'T BE DELETED : ${err}`))
 				const size = client.guilds.cache.size || client.guilds.size;
 				if (size) {
 					dbl.postStats(size).then(() => console.log(`STAT POSTED WITH ${size}`)).catch((err) => console.log(`ERROR: STATS NOT POSTED ${err}`));

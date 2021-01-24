@@ -1,17 +1,13 @@
 const tdvApi = require('tradingview-scraper');
-
 const tv = new tdvApi.TradingViewAPI();
 
 function deleteSubscriptions(){
 	return new Promise((resolve, reject) => {
-		if(tv.subscriptions.length > 50 ){
-			for(let i = 0; i < tv.subscriptions.length; i++) {
-				console.log(i, tv.subscriptions.length)
-				delete tv.tickerData[tv.subscriptions[i]]
-			}
+		try{
+			tv.tickerData = {};
 			tv.subscriptions = [];
-		}
-		resolve();
+			resolve();
+		} catch (e) {reject(e);}
 	});
 }
 
@@ -22,7 +18,7 @@ function getStockData(tagArray = []) {
 		const size = tagArray.length;
 		// I'm sure this is ugly, but it works.
 		tagArray.forEach((tag) => {
-			tv.getTicker(tag)
+			tv.getTicker(tag.toUpperCase())
 				.then((resp) => {
 					data.push({
 						status: 1,
@@ -38,12 +34,6 @@ function getStockData(tagArray = []) {
 					});
 					i++;
 					if (i >= size) {
-						console.log(tv.subscriptions, tv.subscriptions.length)
-						// console.log("v1", tv.tickerData, tv.subscriptions, tv.subscriptions.length)
-						// deleteSubscriptions().then(() => {
-						// 	console.log("v2", tv.tickerData, tv.subscriptions, tv.subscriptions.length)
-						// 	resolve(data);
-						// })
 						resolve(data);
 					}
 				}).catch((err) => {
@@ -60,4 +50,5 @@ function getStockData(tagArray = []) {
 
 module.exports = {
 	getStockData,
+	deleteSubscriptions
 };

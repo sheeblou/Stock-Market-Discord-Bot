@@ -52,7 +52,8 @@ exports.run = async (client, msg) => {
 			});
 		}
 		const footer = posUser !== 0 ? `You are ranked ${posUser}/${numUsers}` : `${numUsers} users are registered on this server`;
-		msgBot.edit(tool.createEmbedMessage(msg, '008CFF', 'Leaderboard', msgArray, null, null, footer));
+		msgBot.edit(tool.createEmbedMessage(msg, '008CFF', 'Leaderboard', msgArray, null, null, footer))
+			.then(() => msg.channel.send("This command does not work as expected. Some users may be missing."));
 	}).catch((err) => {
 		msgBot.edit(tool.createEmbedMessage(msg, 'FF0000', 'Error! No users are registered on the server!'));
 		console.log(err);

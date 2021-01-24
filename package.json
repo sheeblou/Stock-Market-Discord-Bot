@@ -4,8 +4,8 @@
   "description": "A bot to 'play' with the stock market with fake money",
   "main": "js/main.js",
   "scripts": {
-    "start": "node js/index.js",
-    "dev": "nodemon js/index.js"
+    "start": "node js/app.js",
+    "dev": "nodemon js/app.js"
   },
   "keywords": [],
   "author": "Cryx#7291",
@@ -18,5 +18,8 @@
     "mysql": "^2.18.1",
     "plotly": "^1.0.6",
     "tradingview-scraper": "^0.3.0"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.3"
   }
 }

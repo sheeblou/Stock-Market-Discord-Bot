@@ -3,7 +3,7 @@ const tool = require('../util/tools.js');
 exports.run = (client, msg, args) => {
 	if (args) {
 		const cmd = client.commands.get(args.toLowerCase())
-      || client.commands.get(client.aliases.get(args.toLowerCase()));
+      	|| client.commands.get(client.aliases.get(args.toLowerCase()));
 		if (cmd) {
 			return msg.channel.send(tool.createEmbedMessage(msg, '008CFF', cmd.config.name,
 				[

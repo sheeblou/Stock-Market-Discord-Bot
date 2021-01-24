@@ -209,6 +209,18 @@ async function getTradeInfo(list, msg) {
 	return [arrResult, sumTrades, sumProfit];
 }
 
+
+function postStats(client){
+	const dateNow = Math.round(Date.now() / 1000);
+	const totalServers = client.guilds.cache.size || client.guilds.size || -1;
+	sql.query('SELECT SUM(money), COUNT(*) FROM userdata WHERE money<1000000000000', (err, result) => {
+		sql.query(
+			'INSERT INTO stats_bot VALUES(?,?,?,?)',
+			[dateNow, totalServers, result[0] || -1, result[1] || -1],
+			(err) => {console.log(err)});
+	});
+}
+
 module.exports = {
 	getUserData,
 	isAccountCreated,
@@ -219,5 +231,6 @@ module.exports = {
 	getPrefixServer,
 	setPrefixServer,
 	isMarketLimited,
+	postStats,
 	sql,
 };
