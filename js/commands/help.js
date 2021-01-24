@@ -28,7 +28,7 @@ exports.run = (client, msg, args) => {
 			{
 				name: '*Basics*',
 				value: "- `help` You're here \n"
-          + '- `init` The command to get started \n'
+          + '- `init <amount>` The command to get started (0 < `amount` =< 100000)\n'
           + '- `del` Delete your account from the database (__Warning: Your account will be instantly wiped out from the database without any confirmation!__)\n'
           + '- `prefix <prefix>` Change my prefix to the choosen one!\n'
           + '*Note: Mention me with `prefix` to know my prefix! (@Stock Market prefix)*\n'

@@ -30,4 +30,5 @@ exports.config = {
 	category: 'Basics',
 	usage: 'init',
 	description: 'Initialize your account!',
+	syntax : '<amount> (0 < amount =< 100000)'
 };

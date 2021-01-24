@@ -6,7 +6,7 @@ The data is provided by [tradingview](https://www.tradingview.com) through the l
 Prefix by default: `sm!`
 ### Basics
 - `help` Gives you the help you need!
-- `init` The command to get started
+- `init <amount>` The command to get started (0 < `amount` =< 100000)
 - `del` Delete your account from the database <br />
   (__Warning: Your account will be instantly wiped out from the database without any confirmation!__)
 - `prefix <prefix>` Change my prefix to the choosen one! <br />
