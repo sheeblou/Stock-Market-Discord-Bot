@@ -216,7 +216,7 @@ function postStats(client){
 	sql.query('SELECT SUM(money), COUNT(*) FROM userdata WHERE money<1000000000000', (err, result) => {
 		sql.query(
 			'INSERT INTO stats_bot VALUES(?,?,?,?)',
-			[dateNow, totalServers, result[1]['COUNT(*)'] || -1, result[0]['SUM(money)']  || -1],
+			[dateNow, totalServers, result[0]['COUNT(*)'] || -1, result[0]['SUM(money)']  || -1],
 			(err) => {console.log(err)});
 	});
 }
