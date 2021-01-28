@@ -27,7 +27,7 @@ module.exports = async (client) => {
 				if (size) {
 					dbl.postStats(size).then(() => console.log(`STAT POSTED WITH ${size}`)).catch((err) => console.log(`ERROR: STATS NOT POSTED ${err}`));
 				}
-			}, 60 * 1000 * 30);
+			}, 3600 * 1000 * 2);
 		}
 	} catch (e) {
 		console.log(e);
