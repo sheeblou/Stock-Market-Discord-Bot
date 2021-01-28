@@ -42,12 +42,14 @@ exports.run = async (client, msg, args) => {
 		const status = editStatus(splited[0]);
 		const symb = splited[1];
 		const byShare = splited[3];
-		const resp = await smarket.getStockData([symb]);
+		let resp;
+		if(symb)
+			resp = await smarket.getStockData([symb]);
 		const list = await mysql.getTradeList(msg, msg.author.id);
 		if (!list) {
 			return msgBot.edit(tool.createEmbedMessage(msg, 'FF0000', 'Something went terribly wrong! Please try again or contact the support.'));
 		}
-		if (resp[0].status === 0 || !resp[0] || !resp[0].price) {
+		if (!resp || !resp[0] || resp[0].status === 0 || !resp[0].price) {
 			return msgBot.edit(tool.createEmbedMessage(msg, 'FF0000', 'Unknown market! Please search one with sm!search'));
 		}
 		const infoPrice = await determinePriceToPay(splited[2], byShare, resp[0]);

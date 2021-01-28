@@ -14,6 +14,8 @@ exports.run = async (client, msg, args) => {
 	[resp] = resp;
 	try {
 		if (resp) {
+			if(!resp.price)
+				throw new Error("StockDataNotComplete");
 			if (resp.status && resp.status !== 0) {
 				const status = (resp.session === 'market') ? 'open' : 'closed';
 				let update = 'Unknown';

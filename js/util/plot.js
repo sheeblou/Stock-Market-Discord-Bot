@@ -57,13 +57,19 @@ function getChart(tag, msg) {
 			};
 
 			plotly(auth.plotlyUser, auth.plotlyToken).getImage(data, plotOpt, (err, imageStream) => {
-				if (err) {
-					reject(err);
+				try{
+					if (err) {
+						reject(err);
+					}
+					const filestream = fs.createWriteStream(`./img/${msg.id}.png`);
+					imageStream.pipe(filestream);
+					filestream.on('error', reject);
+					filestream.on('finish', resolve);
 				}
-				const filestream = fs.createWriteStream(`./img/${msg.id}.png`);
-				imageStream.pipe(filestream);
-				filestream.on('error', reject);
-				filestream.on('finish', resolve);
+				catch (e) {
+					reject(e)
+				}
+
 			});
 		}).catch((e) => {
 			reject(e);
