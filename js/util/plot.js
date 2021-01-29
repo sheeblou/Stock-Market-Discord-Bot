@@ -80,10 +80,9 @@ function getChart(tag, msg) {
 async function deleteCharts() {
 	const dir = await readdir('./img/');
 	dir.forEach((file) => {
-		if (file === 'example.png') return;
-		fs.unlink(`img/${file}`, (err) => {
-			if (err) throw err;
-		});
+		if (file !== 'example.png') {
+			fs.unlink(`img/${file}`, () => {}); // Can lead the bot to crash in some situations
+		}
 	});
 }
 

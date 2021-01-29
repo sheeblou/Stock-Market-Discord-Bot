@@ -33,13 +33,13 @@ exports.run = async (client, msg, args) => {
 				plot.getChart(tag, msg).then(() => {
 					if (fs.existsSync(`img/${msg.id}.png`)) {
 						msgBot.edit(tool.createEmbedMessage(msg, '008CFF', 'Details', [field], `Chart available! (Tradingview's chart available [here](https://tradingview.com/chart/?symbol=${resp.symbol}))`, `${msg.id}.png`));
-						msg.channel.send(tool.createEmbedMessage(msg, '008CFF', '', [{ name: 'Chart', value: resp.symbol }], '', `${msg.id}.png`)).then(() => plot.deleteCharts()).catch((e) => {
+						msg.channel.send(tool.createEmbedMessage(msg, '008CFF', '', [{ name: 'Chart', value: resp.symbol }], '', `${msg.id}.png`)).catch((e) => {
 							console.log(e);
 						});
 					}
 				}).catch(() => {
 					msgBot.edit(tool.createEmbedMessage(msg, '008CFF', 'Details', [field], `Chart available [here](https://tradingview.com/chart/?symbol=${resp.symbol}).`));
-				});
+				}).finally(() => plot.deleteCharts());
 				return;
 			}
 		}
