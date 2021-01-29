@@ -63,9 +63,17 @@ function getSpecificColumn(arr, index) {
 	return result;
 }
 
+async function getTotalServersOnBot(client){
+	return client.shard.fetchClientValues('guilds.cache.size')
+		.then(results => {
+			return results.reduce((acc, guildCount) => acc + guildCount, 0)})
+		.catch((err) => {})
+}
+
 module.exports = {
 	createEmbedMessage,
 	setRightNumFormat,
 	getUser,
 	getSpecificColumn,
+	getTotalServersOnBot
 };

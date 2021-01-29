@@ -210,9 +210,9 @@ async function getTradeInfo(list, msg) {
 }
 
 
-function postStats(client){
+async function postStats(client){
 	const dateNow = Math.round(Date.now() / 1000);
-	const totalServers = client.guilds.cache.size || client.guilds.size || -1;
+	const totalServers = await tool.getTotalServersOnBot(client);
 	sql.query('SELECT SUM(money), COUNT(*) FROM userdata WHERE money<1000000000000', (err, result) => {
 		sql.query(
 			'INSERT INTO stats_bot VALUES(?,?,?,?)',

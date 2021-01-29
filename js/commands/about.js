@@ -3,7 +3,8 @@ const tool = require('../util/tools.js');
 
 exports.run = async (client, msg) => {
 	const msgBot = await msg.channel.send(tool.createEmbedMessage(msg, 'FF8400', 'Fetching data...'));
-
+	const numServer = await tool.getTotalServersOnBot(client)
+	console.log(client.guilds.cache.size);
 	mysql.sql.query('SELECT SUM(money), COUNT(*) FROM userdata WHERE money<1000000000000',
 		(err, result) => {
 			if (err) throw err;
@@ -12,7 +13,7 @@ exports.run = async (client, msg) => {
 			const arr = [
 				{
 					name: 'Stats:',
-					value: `- Working with **${totalMembers}** traders, owning **$${totalMoney}** in their balance!\n- Doing my business on **${tool.setRightNumFormat(client.guilds.cache.size, false)}** servers!`,
+					value: `- Working with **${totalMembers}** traders, owning **$${totalMoney}** in their balance!\n- Doing my business on **${tool.setRightNumFormat(numServer, false)}** servers!`,
 				},
 				{
 					name: 'Need support?',
@@ -28,7 +29,9 @@ exports.run = async (client, msg) => {
 				},
 				{
 					name: 'Donate!',
-					value: '**BTC :** `3CsrqouBbDToyoZH4XCq3yjs5DoCPMG3Ba`\n**ETH :** `0x8ACba400cACFb79977c607aAEFDf71De35405076`',
+					value: '**BTC :** `3CsrqouBbDToyoZH4XCq3yjs5DoCPMG3Ba`' +
+						'\n**ETH :** `0x8ACba400cACFb79977c607aAEFDf71De35405076`' +
+						'\n**A coffee? :** https://www.buymeacoffee.com/cryx',
 				},
 			];
 			msgBot.edit(tool.createEmbedMessage(msg, '008CFF', 'About the bot', arr));

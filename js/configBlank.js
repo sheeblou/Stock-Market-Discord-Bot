@@ -11,6 +11,7 @@ const topggToken = '';
 const plotlyUser = '';
 const plotlyToken = '';
 const finnhubToken = '';
+const numShards = 3; //NOT NEEDED BELOW 2500 SERVERS
 
 module.exports = {
 	cooldown,
@@ -26,4 +27,5 @@ module.exports = {
 	plotlyUser,
 	plotlyToken,
 	finnhubToken,
+	numShards
 };
