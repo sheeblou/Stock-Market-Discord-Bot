@@ -23,6 +23,10 @@ exports.run = async (client, msg) => {
 					value: 'https://github.com/cryx3001/Stock-Market-Discord-Bot',
 				},
 				{
+					name: 'Invite me on your server!',
+					value: 'https://discord.com/oauth2/authorize?client_id=700690470891814912&scope=bot&permissions=8'
+				},
+				{
 					name: 'Donate!',
 					value: '**BTC :** `3CsrqouBbDToyoZH4XCq3yjs5DoCPMG3Ba`\n**ETH :** `0x8ACba400cACFb79977c607aAEFDf71De35405076`',
 				},
