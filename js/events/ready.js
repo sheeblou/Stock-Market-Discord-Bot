@@ -6,13 +6,7 @@ const tools = require('../util/tools.js')
 module.exports = async (client) => {
 	try {
 		console.log(`Logged ! ${client.user.tag}`);
-		// client.user.setPresence({
-		// 	activity: {
-		// 		name: `${await tools.getTotalServersOnBot(client)} servers! | sm!help`,
-		// 		type: 'WATCHING',
-		// 		url: 'https://www.twitch.tv/monstercat',
-		// 	},
-		// });
+		tools.updateBotStatus(client);
 		mysql.sql.connect((err) => {
 			if (err) throw err;
 			console.log('Connected!');

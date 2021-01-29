@@ -24,7 +24,6 @@ async function init() {
 					client.aliases.set(al, cmd.config.usage);
 				});
 			}
-			console.log(`Command ${f} loaded!`);
 		} catch (e) {
 			console.log(`Command ${f} couldn't load, ${e}`);
 		}
@@ -35,7 +34,6 @@ async function init() {
 			const event = require(`./events/${f}`);
 			const eventName = f.split('.')[0];
 			client.on(eventName, event.bind(null, client));
-			console.log(`Event ${f} loaded!`);
 		} catch (e) {
 			console.log(`Event ${f} couldn't load, ${e}`);
 		}

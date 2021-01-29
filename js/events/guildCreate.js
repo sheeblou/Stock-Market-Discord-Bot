@@ -19,7 +19,7 @@ module.exports = async (client, guild) => {
 			})
 				.catch(() => guild.owner.send("Hey! Someone added me on your server (but I couldn't know who), unfortunately I can't send any messages on the server, please check my permissions!\nHappy trading!").catch(() => console.log("Couldn't send msg to owner")));
 		}
-		client.user.setPresence({ activity: { name: `${await tool.getTotalServersOnBot(client)} servers! | sm!help`, type: 'WATCHING', url: 'https://www.twitch.tv/monstercat' } });
+		tool.updateBotStatus(client);
 		console.log(`JOINED ${guild.id} - ${guild.name} - ${guild.memberCount} - (${client.users.cache.size})`);
 	} catch (e) {
 		console.log(e);

@@ -67,7 +67,17 @@ async function getTotalServersOnBot(client){
 	return client.shard.fetchClientValues('guilds.cache.size')
 		.then(results => {
 			return results.reduce((acc, guildCount) => acc + guildCount, 0)})
-		.catch((err) => {})
+		.catch((err) => {
+			console.log(err);
+		})
+}
+
+async function updateBotStatus(client){
+	getTotalServersOnBot(client).then((numServers) =>{
+		if(numServers) {
+			client.shard.broadcastEval(`this.user.setPresence({activity: {name: \`${numServers} servers! | sm!help\`, type: 'WATCHING', url: 'https://www.twitch.tv/monstercat'}})`).catch(err => console.log(err))
+		}
+	});
 }
 
 module.exports = {
@@ -75,5 +85,6 @@ module.exports = {
 	setRightNumFormat,
 	getUser,
 	getSpecificColumn,
-	getTotalServersOnBot
+	getTotalServersOnBot,
+	updateBotStatus
 };
