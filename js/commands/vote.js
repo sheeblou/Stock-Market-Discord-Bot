@@ -9,7 +9,7 @@ exports.run = async (client, msg) => {
 		return;
 	}
 	if (!dbl) {
-		dbl = new DBL(client.config.topggToken, client);
+		dbl = new DBL(process.env.TOPGG_TOKEN, client);
 	}
 	const data = await mysql.getUserData(msg.author.id, ['votetime', 'money']);
 	const voteTime = data[0].votetime;

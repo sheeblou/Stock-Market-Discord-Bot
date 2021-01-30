@@ -5,8 +5,6 @@ const discordjs = require('discord.js');
 
 const client = new discordjs.Client();
 
-client.config = require('./config.js');
-
 client.commands = new Enmap();
 client.aliases = new Enmap();
 client.events = new Enmap();
@@ -39,7 +37,7 @@ async function init() {
 		}
 	});
 
-	client.login(client.config.token);
+	client.login(process.env.BOT_TOKEN);
 }
 
 init();

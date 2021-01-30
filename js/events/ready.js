@@ -12,7 +12,7 @@ module.exports = async (client) => {
 			console.log('Connected!');
 		});
 		if (process.env.npm_lifecycle_event !== 'dev' && client.options.shards && client.options.shards[0] === 0) {
-			const dbl = new DBL(client.config.topggToken, client);
+			const dbl = new DBL(process.env.TOPGG_TOKEN, client);
 			setInterval(() => {
 				mysql.postStats(client);
 				smarket.deleteSubscriptions()

@@ -2,7 +2,6 @@ const axios = require('axios');
 const fs = require('fs');
 const { promisify } = require('util');
 const plotly = require('plotly');
-const auth = require('../config.js');
 
 const readdir = promisify(fs.readdir);
 const plotOpt = {
@@ -19,7 +18,7 @@ async function getCandlesData(tag) {
 
 	const nowTimestamp = parseInt(Date.now() / 1000, 10);
 	const monthTimestamp = parseInt(nowTimestamp - 5356800, 10);
-	const request = `candle?symbol=${tag.toUpperCase()}&resolution=D&from=${monthTimestamp}&to=${nowTimestamp}&token=${auth.finnhubToken}`;
+	const request = `candle?symbol=${tag.toUpperCase()}&resolution=D&from=${monthTimestamp}&to=${nowTimestamp}&token=${process.env.FINNHUB_TOKEN}`;
 
 	return new Promise((resolve, reject) => {
 		axios.get(`https://finnhub.io/api/v1/stock/${request}`).then((arr) => {
@@ -56,7 +55,7 @@ function getChart(tag, msg) {
 				}],
 			};
 
-			plotly(auth.plotlyUser, auth.plotlyToken).getImage(data, plotOpt, (err, imageStream) => {
+			plotly(process.env.PLOTLY_USER, process.env.PLOTLY_TOKEN).getImage(data, plotOpt, (err, imageStream) => {
 				try{
 					if (err) {
 						reject(err);

@@ -8,7 +8,7 @@ module.exports = async (client, msg) => {
 
 	if (msg.guild === null && msg.author.id !== client.user.id && !msg.content.startsWith('sm!')) {
 		console.log(`DM: ${msg.author.id} - ${msg.content}`);
-		const owner = await client.users.fetch(client.config.ownerID);
+		const owner = await client.users.fetch(process.env.BOT_OWNERID);
 		owner.send(`${msg.author.id} (${msg.author.username}#${msg.author.discriminator}) - ${msg.content}`);
 	}
 
@@ -25,7 +25,7 @@ module.exports = async (client, msg) => {
 					return msg.channel.send("You can't use this command in a pm!");
 				}
 				if (cmd.config.permissions) {
-					if (cmd.config.permissions.BOT_PERMISSIONS !== undefined && cmd.config.permissions.BOT_PERMISSIONS.includes('OWNER') && msg.author.id !== client.config.ownerID) {
+					if (cmd.config.permissions.BOT_PERMISSIONS !== undefined && cmd.config.permissions.BOT_PERMISSIONS.includes('OWNER') && msg.author.id !== process.env.BOT_OWNERID) {
 						return msg.channel.send('Only the owner of the bot can use this command!');
 					} if (cmd.config.permissions.SERVER_PERMISSIONS) {
 						const perms = msg.channel.permissionsFor(msg.author.id);
@@ -35,12 +35,12 @@ module.exports = async (client, msg) => {
 				}
 
 				if (coolDownSet.has(msg.author.id)) {
-					msg.channel.send(`Please wait ${client.config.cooldown} seconds before using another command!`);
+					msg.channel.send(`Please wait ${process.env.BOT_COOLDOWN | 0} seconds before using another command!`);
 				} else {
 					const args = msg.content.slice(prefix.length + sMsg[0].split(prefix)[1].length).trim();
 					cmd.run(client, msg, args);
 					coolDownSet.add(msg.author.id);
-					setTimeout(() => coolDownSet.delete(msg.author.id), client.config.cooldown * 1000);
+					setTimeout(() => coolDownSet.delete(msg.author.id), (process.env.BOT_COOLDOWN | 0) * 1000);
 				}
 			} catch (e) {
 				msg.channel.send(`${'Something went terribly wrong! Please send the following text to Cryx#7291\n'

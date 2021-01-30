@@ -2,6 +2,7 @@ package-lock.json
 .idea
 .github
 node_modules
-js/config.js
 img/*
 !img/example.png
+config/*
+!config/blank.env

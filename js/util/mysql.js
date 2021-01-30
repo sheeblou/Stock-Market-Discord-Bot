@@ -1,13 +1,12 @@
 let sql = require('mysql');
 const smarket = require('./stockmarket.js');
 const tool = require('./tools.js');
-const auth = require('../config.js');
 
 sql = sql.createConnection({
-	host: auth.dbHost,
-	database: auth.dbName,
-	user: auth.dbUser,
-	password: auth.dbPass,
+	host: process.env.DB_HOST,
+	database: process.env.DB_NAME,
+	user: process.env.DB_USER,
+	password: process.env.DB_PASS
 });
 
 function getUserData(userId, value = ['*']) {
