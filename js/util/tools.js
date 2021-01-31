@@ -75,7 +75,7 @@ async function getTotalServersOnBot(client){
 async function updateBotStatus(client){
 	getTotalServersOnBot(client).then((numServers) =>{
 		if(numServers) {
-			client.shard.broadcastEval(`this.user.setPresence({activity: {name: \`${numServers} servers! | sm!help\`, type: 'WATCHING', url: 'https://www.twitch.tv/monstercat'}})`).catch(err => console.log(err))
+			client.shard.broadcastEval(`if(this.user){this.user.setPresence({activity: {name: \`${numServers} servers! | sm!help\`, type: 'WATCHING', url: 'https://www.twitch.tv/monstercat'}})}`).catch(err => console.log(err))
 		}
 	});
 }
