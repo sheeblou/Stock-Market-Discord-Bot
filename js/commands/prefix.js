@@ -25,7 +25,7 @@ exports.run = async (client, msg, args) => {
 	} else {
 		mysql.sql.query('DELETE FROM prefixserver WHERE id = ?', [msg.guild.id], (err) => { if (err) throw err; });
 	}
-	msg.channel.send(`My prefix is now \`${args}\``);
+	msg.channel.send(`My prefix is now \`${args}\` (e.g: \`${args}help\`)`);
 };
 
 exports.config = {
