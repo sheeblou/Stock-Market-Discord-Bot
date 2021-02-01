@@ -1,5 +1,5 @@
-const mysql = require('../util/mysql.js');
-const tool = require('../util/tools.js');
+const mysql = require('../../util/mysql.js');
+const tool = require('../../util/tools.js');
 
 exports.run = async (client, msg) => {
 	const msgBot = await msg.channel.send(tool.createEmbedMessage(msg, 'FF8400', 'Deleting account...'));

@@ -1,4 +1,4 @@
-const mysql = require('../util/mysql.js');
+const mysql = require('../../util/mysql.js');
 
 exports.run = async (client, msg, args) => {
 	const splited = args.split(' ');

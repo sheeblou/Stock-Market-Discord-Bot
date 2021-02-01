@@ -1,5 +1,5 @@
-const mysql = require('../util/mysql.js');
-const tool = require('../util/tools.js');
+const mysql = require('../../util/mysql.js');
+const tool = require('../../util/tools.js');
 
 exports.run = async (client, msg) => {
 	if (await mysql.isAccountCreated(msg.author.id, true, msg)) {

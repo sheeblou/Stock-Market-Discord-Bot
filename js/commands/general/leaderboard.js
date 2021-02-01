@@ -1,5 +1,5 @@
-const mysql = require('../util/mysql.js');
-const tool = require('../util/tools.js');
+const mysql = require('../../util/mysql.js');
+const tool = require('../../util/tools.js');
 
 function getUsersStats(client, msg) {
 	return new Promise((resolve, reject) => {

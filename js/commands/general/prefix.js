@@ -1,4 +1,4 @@
-const mysql = require('../util/mysql.js');
+const mysql = require('../../util/mysql.js');
 
 exports.run = async (client, msg, args) => {
 	if (args === undefined || args.length > 5 || args.length < 1) {

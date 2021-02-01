@@ -1,4 +1,4 @@
-const tool = require('../util/tools.js');
+const tool = require('../../util/tools.js');
 
 exports.run = (client, msg, args) => {
 	if (args) {

@@ -1,6 +1,6 @@
-const tool = require('../util/tools.js');
-const smarket = require('../util/stockmarket.js');
-const mysql = require('../util/mysql.js');
+const tool = require('../../util/tools.js');
+const smarket = require('../../util/stockmarket.js');
+const mysql = require('../../util/mysql.js');
 
 exports.run = async (client, msg) => {
 	const msgBot = await msg.channel.send(tool.createEmbedMessage(msg, 'FF8400', 'Pinging...'));

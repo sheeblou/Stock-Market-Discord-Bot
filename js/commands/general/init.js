@@ -1,5 +1,5 @@
-const mysql = require('../util/mysql.js');
-const tool = require('../util/tools.js');
+const mysql = require('../../util/mysql.js');
+const tool = require('../../util/tools.js');
 const helpCmd = require('./help.js');
 
 exports.run = async (client, msg, args) => {

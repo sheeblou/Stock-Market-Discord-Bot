@@ -1,6 +1,6 @@
-const mysql = require('../util/mysql.js');
-const tool = require('../util/tools.js');
-const smarket = require('../util/stockmarket.js');
+const mysql = require('../../util/mysql.js');
+const tool = require('../../util/tools.js');
+const smarket = require('../../util/stockmarket.js');
 
 function editStatus(status) {
 	const aliasesStatus = {

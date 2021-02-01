@@ -1,7 +1,7 @@
 const fs = require('fs');
-const tool = require('../util/tools.js');
-const smarket = require('../util/stockmarket.js');
-const plot = require('../util/plot.js');
+const tool = require('../../util/tools.js');
+const smarket = require('../../util/stockmarket.js');
+const plot = require('../../util/plot.js');
 
 exports.run = async (client, msg, args) => {
 	const msgBot = await msg.channel.send(tool.createEmbedMessage(msg, 'FF8400', 'Fetching data...'));
