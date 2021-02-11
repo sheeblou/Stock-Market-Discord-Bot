@@ -15,15 +15,17 @@ module.exports = async (client) => {
 			const dbl = new DBL(process.env.TOPGG_TOKEN, client);
 			setInterval(() => {
 				mysql.postStats(client);
-				smarket.deleteSubscriptions()
-					.then(() => console.log("SUBSCRIPTIONS DELETED"))
-					.catch((err) => console.log(`SUBSCRIPTIONS COULDN'T BE DELETED : ${err}`))
+				// smarket.deleteSubscriptions()
+				// 	.then(() => console.log("SUBSCRIPTIONS DELETED"))
+				// 	.catch((err) => console.log(`SUBSCRIPTIONS COULDN'T BE DELETED : ${err}`))
 				tools.getTotalServersOnBot(client).then((size) =>{
 					if (size) {
 						dbl.postStats(size).then(() => console.log(`STAT POSTED WITH ${size}`)).catch((err) => console.log(`ERROR: STATS NOT POSTED ${err}`));
 					}
 				})
-			}, 3600 * 1000 * 2);
+				client.destroy()
+				setTimeout(() => client.login(process.env.BOT_TOKEN).catch((e) => {}), 5000);
+			}, 3600 * 1000 * 1);
 		}
 	} catch (e) {
 		console.log(e);
