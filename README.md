@@ -41,7 +41,7 @@ Now it's time to trade! Follow the instructions above for `newtrade` and `closet
 Happy trading!
 
 ### Can I run this code on my bot?
-- Yup! Please fill the missing fields in `config/blank.env` and rename it to `config/prod.env`. (Free MySQL databases can be found on ![](https://www.alwaysdata.com))
+- Yup! Please fill the missing fields in `config/blank.env` and rename it to `config/prod.env`. (Free MySQL databases can be found on https://www.alwaysdata.com)
 - `npm` and `nodejs` latest versions should be installed.
 - Run `npm install` in the root directory to install the necessary modules.
 - Run `./js/app.js`
