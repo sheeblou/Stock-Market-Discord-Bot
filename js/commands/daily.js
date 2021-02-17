@@ -27,7 +27,7 @@ exports.run = async (client, msg) => {
 
 			msg.channel.send(tool.createEmbedMessage(msg, 'FF0000', 'Your daily reward!',
 				[{
-					name: 'Be patient !',
+					name: 'Be patient!',
 					value: `Please wait **${h.toString().substr(-2)}h${m.toString().substr(-2)}m${s.toString().substr(-2)}s** and try again.`,
 				}]));
 		}
