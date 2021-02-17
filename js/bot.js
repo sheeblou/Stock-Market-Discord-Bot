@@ -2,6 +2,7 @@ const { promisify } = require('util');
 const readdir = promisify(require('fs').readdir);
 const Enmap = require('enmap');
 const discordjs = require('discord.js');
+const mysql = require('./util/mysql.js');
 
 const client = new discordjs.Client();
 
@@ -38,6 +39,10 @@ async function init() {
 	});
 
 	client.login(process.env.BOT_TOKEN);
+	mysql.sql.connect((err) => {
+		if (err) throw err;
+		console.log('Connected!');
+	});
 }
 
 init();
