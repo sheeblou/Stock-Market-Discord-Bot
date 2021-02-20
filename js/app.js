@@ -14,3 +14,13 @@ manager.on('shardCreate', shard => {
     console.log(`Launched shard ${shard.id}`)
 })
 manager.spawn(this.totalShards, 10000, -1);
+
+function killEveryShards(){
+    try{
+        manager.shards.forEach(shard => {shard.kill()})
+    }
+    catch (e){
+        console.log(e);
+    }
+}
+process.on("exit", killEveryShards);
