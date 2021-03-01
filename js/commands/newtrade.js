@@ -8,6 +8,7 @@ function editStatus(status) {
 		buy: 'buy',
 		s: 'sell',
 		sell: 'sell',
+		short: 'sell'
 	};
 	return aliasesStatus[status] || undefined;
 }
