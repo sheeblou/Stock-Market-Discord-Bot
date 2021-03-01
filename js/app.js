@@ -13,4 +13,14 @@ const manager = new ShardingManager('./js/bot.js',
 manager.on('shardCreate', shard => {
     console.log(`Launched shard ${shard.id}`)
 })
-manager.spawn();
+manager.spawn(this.totalShards, 10000, -1);
+
+function killEveryShards(){
+    try{
+        manager.shards.forEach(shard => {shard.kill()})
+    }
+    catch (e){
+        console.log(e);
+    }
+}
+process.on("exit", killEveryShards);

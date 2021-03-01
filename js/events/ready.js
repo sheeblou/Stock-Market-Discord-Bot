@@ -7,10 +7,6 @@ module.exports = async (client) => {
 	try {
 		console.log(`Logged ! ${client.user.tag}`);
 		tools.updateBotStatus(client);
-		mysql.sql.connect((err) => {
-			if (err) throw err;
-			console.log('Connected!');
-		});
 		if (process.env.npm_lifecycle_event !== 'dev' && client.options.shards && client.options.shards[0] === 0) {
 			const dbl = new DBL(process.env.TOPGG_TOKEN, client);
 			setInterval(() => {
