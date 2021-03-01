@@ -14,23 +14,23 @@ function editStatus(status) {
 
 async function determinePriceToPay(amount, str, infoStock) {
 	const limitedAmount = 10000;
-	let edited;
+	let edited = undefined;
 	let tempAmount = parseFloat(amount || -1);
 	if (str === 's' || str === 'share') {
 		tempAmount = amount * infoStock.price;
 	}
-	if (amount > limitedAmount) {
-		if (infoStock.update) {
-			if (infoStock.update.startsWith('delayed_streaming')) {
-				tempAmount = limitedAmount;
-				edited = 'delayed';
-			}
-		} else if (await mysql.isMarketLimited(infoStock.symbol)
-			|| await mysql.isMarketLimited(infoStock.symbol_pro)) {
-			tempAmount = limitedAmount;
-			edited = 'limited';
-		}
-	}
+	// if (amount > limitedAmount) {
+	// 	if (infoStock.update) {
+	// 		if (infoStock.update.startsWith('delayed_streaming')) {
+	// 			tempAmount = limitedAmount;
+	// 			edited = 'delayed';
+	// 		}
+	// 	} else if (await mysql.isMarketLimited(infoStock.symbol)
+	// 		|| await mysql.isMarketLimited(infoStock.symbol_pro)) {
+	// 		tempAmount = limitedAmount;
+	// 		edited = 'limited';
+	// 	}
+	// }
 	return [tempAmount, edited];
 }
 
