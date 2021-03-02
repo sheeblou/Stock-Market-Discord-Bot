@@ -90,7 +90,7 @@ exports.run = async (client, msg, args) => {
 				return msgBot.edit(tool.createEmbedMessage(msg, 'FF0000', 'Payment refused!',
 					[{
 						name: `${resp[0].name} - ${symb.toUpperCase()}`,
-						value: 'You don't have enough money! (Or an invalid amount has been entered!)',
+						value: 'You don/'t have enough money! (Or an invalid amount has been entered!)',
 					}]));
 			}
 		}
