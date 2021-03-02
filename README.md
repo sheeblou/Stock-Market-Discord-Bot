@@ -1,5 +1,5 @@
 # Stock Market Bot
-It is a bot to "play" with the stock market by using fake money ! It also supports cryptocurrencies.
+It is a bot to "play" with the stock market by using fake money! It also supports cryptocurrencies.
 The data is provided by [tradingview](https://www.tradingview.com) through the library [tradingview-scraper](https://github.com/imxeno/tradingview-scraper).
 
 ## Available commands
