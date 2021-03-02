@@ -51,7 +51,7 @@ exports.run = async (client, msg, args) => {
 			return msgBot.edit(tool.createEmbedMessage(msg, 'FF0000', 'Something went terribly wrong! Please try again or contact the support.'));
 		}
 		if (!resp || !resp[0] || resp[0].status === 0 || !resp[0].price) {
-			return msgBot.edit(tool.createEmbedMessage(msg, 'FF0000', 'Unknown market! Please search one with sm!search'));
+			return msgBot.edit(tool.createEmbedMessage(msg, 'FF0000', 'Unknown ticker! Please for search one with sm!search'));
 		}
 		const infoPrice = await determinePriceToPay(splited[2], byShare, resp[0]);
 		const amount = infoPrice[0];
@@ -83,14 +83,14 @@ exports.run = async (client, msg, args) => {
 							value: `You now own **${vol}** shares from this stock! (Type: ${status.toUpperCase()})`,
 						}]));
 					if (edited === 'limited' || edited === 'delayed') {
-						msg.channel.send(tool.createEmbedMessage(msg, 'FF0000', `Warning, you are using a ${edited} market. Only $10K have been deducted from your balance.`));
+						msg.channel.send(tool.createEmbedMessage(msg, 'FF0000', `Warning, you are using a ${edited} market. Only $10K has been deducted from your balance.`));
 					}
 				}
 			} else {
 				return msgBot.edit(tool.createEmbedMessage(msg, 'FF0000', 'Payment refused!',
 					[{
 						name: `${resp[0].name} - ${symb.toUpperCase()}`,
-						value: 'You don\'t have enough money! (Or an invalid amount has been entered!)',
+						value: 'You don't have enough money! (Or an invalid amount has been entered!)',
 					}]));
 			}
 		}
