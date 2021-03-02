@@ -18,7 +18,7 @@ exports.run = async (client, msg, args) => {
 		const embedList = [];
 
 		if (list.length <= 0) {
-			msgBot.edit(tool.createEmbedMessage(msg, 'FF0000', (targetUser.id !== msg.author.id) ? `${displayName} doesn't own any share!` : "You don't own any share!"));
+			msgBot.edit(tool.createEmbedMessage(msg, 'FF0000', (targetUser.id !== msg.author.id) ? `${displayName} doesn't own any shares!` : "You don't own any share!"));
 		} else {
 			const tradeInfo = await mysql.getTradeInfo(list, msg);
 			const tradeData = tradeInfo[0];
