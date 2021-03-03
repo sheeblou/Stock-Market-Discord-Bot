@@ -3,10 +3,11 @@ const mysql = require('../util/mysql.js');
 const coolDownSet = new Set();
 
 module.exports = async (client, msg) => {
-	if (msg.author.bot) return;
-	const sMsg = msg.content.split(' ');
+	if (msg.author.bot || !msg.content) return;
+	const lcMsgContent = msg.content.toLowerCase();
+	const sMsg = lcMsgContent.split(' ');
 
-	if (msg.guild === null && msg.author.id !== client.user.id && !msg.content.startsWith('sm!')) {
+	if (msg.guild === null && msg.author.id !== client.user.id && !lcMsgContent.startsWith('sm!')) {
 		console.log(`DM: ${msg.author.id} - ${msg.content}`);
 		const owner = await client.users.fetch(process.env.BOT_OWNERID);
 		owner.send(`${msg.author.id} (${msg.author.username}#${msg.author.discriminator}) - ${msg.content}`);
@@ -14,11 +15,11 @@ module.exports = async (client, msg) => {
 
 	const idServer = (msg.guild !== null) ? msg.guild.id : '-1';
 	mysql.getPrefixServer(idServer).then((r) => {
-		const prefix = (msg.guild !== null) ? r[0] : 'sm!';
-		if (msg.content.startsWith(prefix)) {
+		const prefix = (msg.guild !== null) ? (r[0] ? r[0].toLowerCase() : 'sm!') : 'sm!';
+		if (prefix && lcMsgContent.startsWith(prefix)) {
 			try {
 				console.log(`${msg.author.id} - ${msg.content}`);
-				const cmdTxt = sMsg[0].split(prefix)[1].toLowerCase();
+				const cmdTxt = sMsg[0].split(prefix)[1];
 				const cmd = client.commands.get(cmdTxt) || client.commands.get(client.aliases.get(cmdTxt));
 				if (!cmd) { return; }
 				if (cmd.config.guildOnly && msg.guild === null) {
