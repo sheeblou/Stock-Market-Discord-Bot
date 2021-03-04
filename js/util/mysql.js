@@ -25,7 +25,7 @@ function getUserData(userId, value = ['*']) {
 async function updateMoney(msg, userID, num, isAdding = true) {
 	let money = await getUserData(userID, 'money');
 	money = Math.max(0, isAdding === true ? money[0].money + num : num);
-	sql.query('UPDATE userdata SET money = ? WHERE id = ?', [money, userID], (err) => { if (err) throw err; });
+	sql.query('UPDATE userdata SET money = ? WHERE id = ?', [money, userID], (err) => { if (err) console.log(err); });
 }
 
 async function getTradeList(msg, userId = msg.author.id, value = null, prelist = null) {
@@ -67,7 +67,7 @@ async function updateList(msg, status, edit = []) {
 	}
 
 	list = { trades: list };
-	sql.query('UPDATE userdata SET trades = ? WHERE id = ?', [JSON.stringify(list), msg.author.id], (err) => { if (err) throw err; });
+	sql.query('UPDATE userdata SET trades = ? WHERE id = ?', [JSON.stringify(list), msg.author.id], (err) => { if (err) console.log(err); });
 }
 
 async function isAccountCreated(userId, autoMessage = false, msg, msgBot = null) {
