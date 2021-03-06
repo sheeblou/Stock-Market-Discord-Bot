@@ -45,7 +45,7 @@ exports.run = async (client, msg, args) => {
 		const byShare = splited[3];
 		let resp;
 		if(symb)
-			resp = await smarket.getStockData([symb]);
+			resp = await smarket.getStockData([symb], false);
 		const list = await mysql.getTradeList(msg, msg.author.id);
 		if (!list) {
 			return msgBot.edit(tool.createEmbedMessage(msg, 'FF0000', 'Something went terribly wrong! Please try again or contact the support.'));

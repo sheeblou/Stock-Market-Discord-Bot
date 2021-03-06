@@ -1,24 +1,24 @@
 const tdvApi = require('tradingview-scraper');
 const tv = new tdvApi.TradingViewAPI();
 
-function deleteSubscriptions(){
-	return new Promise((resolve, reject) => {
-		try{
-			tv.tickerData = {};
-			tv.subscriptions = [];
-			resolve();
-		} catch (e) {reject(e);}
-	});
-}
+// function deleteSubscriptions(){
+// 	return new Promise((resolve, reject) => {
+// 		try{
+// 			tv.tickerData = {};
+// 			tv.subscriptions = [];
+// 			resolve();
+// 		} catch (e) {reject(e);}
+// 	});
+// }
 
-function getStockData(tagArray = []) {
+function getStockData(tagArray = [], lookInCache = true) {
 	const data = [];
 	return new Promise((resolve) => {
 		let i = 0;
 		const size = tagArray.length;
 		// I'm sure this is ugly, but it works.
 		tagArray.forEach((tag) => {
-			tv.getTicker(tag.toUpperCase())
+			tv.getTicker(tag.toUpperCase(), lookInCache)
 				.then((resp) => {
 					data.push({
 						status: 1,
@@ -50,5 +50,5 @@ function getStockData(tagArray = []) {
 
 module.exports = {
 	getStockData,
-	deleteSubscriptions
+	// deleteSubscriptions
 };

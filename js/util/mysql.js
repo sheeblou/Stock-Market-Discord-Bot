@@ -138,7 +138,7 @@ async function getTradeInfo(list, msg) {
 	for (let i = 0; i < list.length; i++) {
 		arrSymb.push(list[i].symbol);
 	}
-	const resp = await smarket.getStockData(arrSymb);
+	const resp = await smarket.getStockData(arrSymb, false);
 	try {
 		list.forEach((elem) => {
 			const market = resp.find((e) => elem.symbol.toUpperCase() === e.symbol || elem.symbol.toUpperCase().split(':')[1] === e.symbol);

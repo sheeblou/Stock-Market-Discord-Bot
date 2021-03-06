@@ -5,7 +5,8 @@
   "main": "js/main.js",
   "scripts": {
     "start": "node js/app.js",
-    "dev": "nodemon js/app.js"
+    "dev": "nodemon js/app.js",
+    "postinstall": "cd ./node_modules/tradingview-scraper && npm install && npm run build"
   },
   "keywords": [],
   "author": "Cryx#7291",
@@ -18,7 +19,7 @@
     "forever-monitor": "^3.0.1",
     "mysql": "^2.18.1",
     "plotly": "^1.0.6",
-    "tradingview-scraper": "^0.3.0"
+    "tradingview-scraper": "https://github.com/cryx3001/tradingview-scraper.git"
   },
   "devDependencies": {
     "nodemon": "^2.0.3"

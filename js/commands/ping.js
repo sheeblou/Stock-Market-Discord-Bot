@@ -7,7 +7,7 @@ exports.run = async (client, msg) => {
 	const timeBOT = msg.client.ws.ping;
 
 	let start = Date.now();
-	await smarket.getStockData(['AAPL']);
+	await smarket.getStockData(['AAPL'], false);
 	const timeAPI = Date.now() - start;
 
 	start = Date.now();

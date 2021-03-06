@@ -10,7 +10,7 @@ exports.run = async (client, msg, args) => {
 		msgBot.edit(tool.createEmbedMessage(msg, 'FF0000', 'Invalid syntax! Please type: show <symbol>'));
 		return;
 	}
-	let resp = await smarket.getStockData([tag]);
+	let resp = await smarket.getStockData([tag], false);
 	[resp] = resp;
 	try {
 		if (resp) {
