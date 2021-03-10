@@ -22,6 +22,7 @@ function createEmbedMessage(msg, color, title, content = [], desc = null,
 }
 
 function setRightNumFormat(num, floatNum = true) {
+	if(!num) return 0;
 	return (Math.abs(num) <= 10 && num !== 0 && floatNum) ? num.toFixed(5) : parseFloat(num.toFixed(2)).toLocaleString('en-US');
 }
 
