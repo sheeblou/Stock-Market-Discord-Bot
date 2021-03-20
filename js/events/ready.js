@@ -7,7 +7,7 @@ module.exports = async (client) => {
 	try {
 		console.log(`Logged ! ${client.user.tag}`);
 		tools.updateBotStatus(client);
-		if (process.env.npm_lifecycle_event !== 'dev' && client.options.shards && client.options.shards[0] === 0) {
+		if (process.env.TOPGG_TOKEN && process.env.npm_lifecycle_event !== 'dev' && client.options.shards && client.options.shards[0] === 0) {
 			const dbl = new DBL(process.env.TOPGG_TOKEN, client);
 			setInterval(() => {
 				mysql.postStats(client);

@@ -13,7 +13,7 @@ const plotOpt = {
 	fileopt: 'overwrite',
 };
 
-async function getCandlesData(tag) {
+async function getCandlesData(tag) { // TODO: Please use yahoo finance
 	if (!tag) return;
 
 	const nowTimestamp = parseInt(Date.now() / 1000, 10);
@@ -37,6 +37,7 @@ async function getCandlesData(tag) {
 
 function getChart(tag, msg) {
 	return new Promise((resolve, reject) => {
+		if(!process.env.FINNHUB_TOKEN || !process.env.PLOTLY_USER || !process.env.PLOTLY_TOKEN) reject("Missing user credentials to create a chart");
 		getCandlesData(tag).then((r) => {
 			const arr = r;
 			arr.t.forEach((v, k) => {
