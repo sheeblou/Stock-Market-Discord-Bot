@@ -44,14 +44,14 @@ exports.run = async (client, msg, args) => {
 		const symb = splited[1];
 		const byShare = splited[3];
 		let resp;
-		if(symb)
+		if (symb)
 			resp = await smarket.getStockData([symb], false);
 		const list = await mysql.getTradeList(msg, msg.author.id);
 		if (!list) {
 			return msgBot.edit(tool.createEmbedMessage(msg, 'FF0000', 'Something went terribly wrong! Please try again or contact the support.'));
 		}
 		if (!resp || !resp[0] || resp[0].status === 0 || !resp[0].price) {
-			return msgBot.edit(tool.createEmbedMessage(msg, 'FF0000', 'Unknown ticker! Please for search one with sm!search'));
+			return msgBot.edit(tool.createEmbedMessage(msg, 'FF0000', 'Unknown ticker! Please search for one with sm!search'));
 		}
 		const infoPrice = await determinePriceToPay(splited[2], byShare, resp[0]);
 		const amount = infoPrice[0];
@@ -104,8 +104,8 @@ exports.config = {
 	aliases: ['nt'],
 	description: 'To trade stocks on the market '
 		+ '(`sm!newtrade buy AAPL 5000`)\n'
-        + '==>buy if you think the stock will go up,\n'
-        + '==>sell if you think the stock will go down.\n'
+		+ '==>buy if you think the stock will go up,\n'
+		+ '==>sell if you think the stock will go down.\n'
 		+ 'Adding "s" or "share" at the end of the command will specify an amount of shares to buy/sell '
 		+ '(ex: `sm!newtrade buy BTCUSD 1 s` will exactly buy 1 bitcoin)',
 	syntax: '<buy/sell> <symbol> <price> <optional: share/s>\n'
