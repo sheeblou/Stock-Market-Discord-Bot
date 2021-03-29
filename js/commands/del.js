@@ -20,5 +20,5 @@ exports.config = {
 	name: 'Delete your account',
 	category: 'Basics',
 	usage: 'del',
-	description: 'Delete your account from the database **(Warning: Your account will be instantly wiped out from the database without any confirmation!)**',
+	description: 'Delete your account from the database **(Warning: Your account will be instantly wiped out from the database without any confirmation!!)**',
 };
