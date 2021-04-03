@@ -15,23 +15,11 @@ exports.run = async (client, msg) => {
 	const timeSQL = Date.now() - start;
 
 	console.log(`Bot: ${timeBOT}ms, API: ${timeAPI}ms, MySQL: ${timeSQL}ms`);
-
-	let resultsShards = await tool.checkStatusShards(client);
-	let shardText = "";
-	for(let i = 0; i < process.env.BOT_NUMSHARDS; i++){
-		shardText += `**SHARD ${i}** ${client.options.shards[0] === i ? "(Me!)" : ""}: `;
-		const elem = resultsShards.find(e => e[0] === i);
-		shardText +=  (elem === undefined ? "*DEAD*" : (elem[1] === 200 ? "*ALIVE*" : "*API ERROR*")) + "\n";
-	}
 	const text = [
 		{
 			name: 'Results:',
 			value: `Bot: **${timeBOT}ms**\nStock Market - API: **${timeAPI}ms**\nDatabase: **${timeSQL}ms**`,
-		},
-		{
-			name: 'Shards results',
-			value: shardText,
-		},
+		}
 	]
 
 	msgBot.edit(tool.createEmbedMessage(msg, '008CFF', 'Pong!', text));
