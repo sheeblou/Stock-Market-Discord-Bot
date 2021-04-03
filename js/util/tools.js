@@ -81,11 +81,19 @@ async function updateBotStatus(client){
 	});
 }
 
+async function checkStatusShards(client){
+	return await client.shard.broadcastEval(`
+	const tvApi = new (require('tradingview-scraper')).TradingViewAPI();
+	tvApi.getTicker("AAPL", false).then(r => [this.options.shards[0], 200]).catch(e => [this.options.shards[0], 500]);
+	`);
+}
+
 module.exports = {
 	createEmbedMessage,
 	setRightNumFormat,
 	getUser,
 	getSpecificColumn,
 	getTotalServersOnBot,
-	updateBotStatus
+	updateBotStatus,
+	checkStatusShards
 };
