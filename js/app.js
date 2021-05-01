@@ -1,4 +1,4 @@
-const {ShardingManager} = require('discord.js');
+const {ShardingManager} = require('discord.js-light');
 const pathEnv = (process.env.npm_lifecycle_event === 'dev') ?
     'config/dev.env' :
     'config/prod.env';
