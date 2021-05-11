@@ -1,4 +1,4 @@
-const discord = require('discord.js-light');
+const discord = require('discord.js');
 
 function createEmbedMessage(msg, color, title, content = [], desc = null,
 	img = null, footer = null) {

@@ -1,17 +1,10 @@
 const { promisify } = require('util');
 const readdir = promisify(require('fs').readdir);
 const Enmap = require('enmap');
-const discordjs = require('discord.js-light');
+const discordjs = require('discord.js');
 const mysql = require('./util/mysql.js');
 
-const client = new discordjs.Client({
-	cacheGuilds: true,
-	cacheChannels: false,
-	cacheOverwrites: false,
-	cacheRoles: true,
-	cacheEmojis: false,
-	cachePresences: false
-});
+const client = new discordjs.Client();
 
 client.commands = new Enmap();
 client.aliases = new Enmap();
