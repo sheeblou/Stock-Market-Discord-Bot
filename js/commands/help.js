@@ -3,7 +3,7 @@ const tool = require('../util/tools.js');
 exports.run = (client, msg, args) => {
 	if (args) {
 		const cmd = client.commands.get(args.toLowerCase())
-      	|| client.commands.get(client.aliases.get(args.toLowerCase()));
+			|| client.commands.get(client.aliases.get(args.toLowerCase()));
 		if (cmd) {
 			return msg.channel.send(tool.createEmbedMessage(msg, '008CFF', cmd.config.name,
 				[
@@ -26,44 +26,41 @@ exports.run = (client, msg, args) => {
 	return msg.channel.send(tool.createEmbedMessage(msg, '008CFF', 'Help!',
 		[
 			{
-				name: '*Basics*',
-				value: "- `help` You're here \n"
-          + '- `init <amount>` The command to get started (0 < `amount` =< 100000)\n'
-          + '- `del` Delete your account from the database (__Warning: Your account will be instantly wiped out from the database without any confirmation!__)\n'
-          + '- `prefix <prefix>` Change my prefix to the choosen one!\n'
-          + '*Note: Mention me with `prefix` to know my prefix! (@Stock Market prefix)*\n'
-          + '- `ping` To see the latency between you, the bot and the API\n'
-          + '- `about` About the bot\n',
+				name: 'Basics',
+				value: "- `help` Shows this message \n"
+					+ '- `init <amount>` Opens your account\n'
+					+ '*(You can specify how much money to start with; Defaults to 100000)*\n'
+					+ '- `del` Delete your account from the database (__This action cannot be reversed__)\n'
+					+ '- `prefix <prefix>` Change the prefix of the bot\n'
+					+ '- `ping` To see the latency between you, the bot and the API\n'
+					+ '- `about` About the bot\n',
 			},
 			{
-				name: '*Player account*',
-				value: "- `balance` / `balance @User` To admire your / user's wealth\n"
-          + "- `list` / `list @User` Your / user's current trades\n"
-          + '- `daily` To get your daily reward\n'
-          + '- `vote` Vote for the bot and get a reward\n'
-			+ '- `leaderboard` Who is the richest in your server?\n',
+				name: 'Account Info',
+				value: "- `balance` or `balance @User` To admire your / user's wealth\n"
+					+ "- `list` / `list @User` Your / user's current trades\n"
+					+ '- `daily` To get your daily reward\n'
+					+ '- `vote` Vote for the bot and get a reward\n'
+					+ '- `leaderboard` Who is the richest in your server? (Not working)\n',
 			},
 			{
-				name: '*Stock Market* ',
-				value: '- `search` To search for stock markets\n'
-          + '- `show <symbol>` To get details about a particular market (ex: *sm!show AAPL*)\n'
-          + '- `newtrade <buy/sell> <symbol> <price> <optional: share/s>` To trade stocks on the market(ex: `sm!newtrade buy AAPL 5000`)\n'
-          + '==>`buy` if you think the stock will go up, \n'
-          + '==>`sell` if you think the stock will go down.\n'
-		  + 'Adding "s" or "share" at the end of the command will specify an amount of shares to buy/sell '
-		  + '(ex: `sm!newtrade buy BTCUSD 1 s` will buy the value of 1 Bitcoin)\n'
-          + '- `closetrade <ID>` (ex: *sm!closetrade 0*) Close a trade (the ID can be found with the `list` command). Give to you the final value of your trade.\n',
+				name: 'Trading',
+				value: '- `search` Search for tickers and markets compatible with the bot\n'
+					+ '- `show <stock>` Get info about a ticker (ex: `sm!show AAPL`)\n'
+					+ '- `nt <buy/short> <ticker> <price/shares>` Buy/short stocks or cryptocurrency\n'
+					+ '*(ex: `sm!nt buy AAPL 100 s` will buy 100 shares of apple, `sm!nt buy AAPL 100` will buy 100 dollars worth of apple shares)*\n'
+					+ '*(When shorting, you gain money as the asset goes down. Think of it as a reverse investment)*\n'
+					+ '- `ct <ID>` Closes a trade. The ID can be found with the `list` command (ex: `sm!ct 0`)\n',
+
 			},
 			{
 				name: '*Available aliases*',
 				value: 'Type `help <command>`\n',
 			},
 			{
-				name: '*Okay, how do I play?* ',
-				value: 'First, you are going to look for a market. Type `sm!search`, it will redirect you to a website.\n'
-          + 'Then type `sm!show <symbol>` if you want more details about it.\n'
-          + "Now it's time to trade! Follow the instructions above for `newtrade` and `closetrade`!\n"
-          + '***The symbol is not the name, but may look like this: TSLA, AAPL, MSFT... ***\nHappy trading!',
+				name: 'Support',
+				value: '[Invite](https://discord.com/oauth2/authorize?client_id=700690470891814912&scope=bot&permissions=8)\n'
+					+ '[Support Server](https://discord.gg/K3tUKAV)\n'
 			},
 		])).catch((e) => {
 		if (e.message === 'Missing Permissions') {
