@@ -35,7 +35,7 @@ function getUsersStats(client, msg) {
 }
 
 exports.run = async (client, msg) => {
-	const msgBot = await msg.channel.send(tool.createEmbedMessage(msg, 'FF8400', 'Fetching data...'));
+	const msgBot = await msg.channel.send(tool.createEmbedMessage(msg, 'FF8400', '<load:844221104380969021> Fetching data'));
 	if (!msg.guild) {
 		return msgBot.edit(tool.createEmbedMessage(msg, 'FF0000', 'Error! Leaderboards are used in servers!'));
 	}
