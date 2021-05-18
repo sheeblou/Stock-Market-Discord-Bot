@@ -2,7 +2,7 @@ const mysql = require('../util/mysql.js');
 const tool = require('../util/tools.js');
 
 exports.run = async (client, msg, args) => {
-	const msgBot = await msg.channel.send(tool.createEmbedMessage(msg, 'FF8400', 'Fetching data...'));
+	const msgBot = await msg.channel.send(tool.createEmbedMessage(msg, 'FF8400', '<load:844221104380969021> Fetching data'));
 	const targetUser = await tool.getUser(msg, args, msgBot);
 	if (!targetUser) {
 		return;
