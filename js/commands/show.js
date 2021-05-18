@@ -4,7 +4,7 @@ const smarket = require('../util/stockmarket.js');
 const plot = require('../util/plot.js');
 
 exports.run = async (client, msg, args) => {
-	const msgBot = await msg.channel.send(tool.createEmbedMessage(msg, 'FF8400', 'Fetching data...'));
+	const msgBot = await msg.channel.send(tool.createEmbedMessage(msg, 'FF8400', '<load:844221104380969021> Fetching data'));
 	const tag = args.split(' ')[0];
 	if (!tag || tag === '') {
 		msgBot.edit(tool.createEmbedMessage(msg, 'FF0000', 'Invalid syntax! Please type: show <symbol>'));
